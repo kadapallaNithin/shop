@@ -1,0 +1,17 @@
+<html>
+    <head>
+        <title>
+            Payments Page
+        </title>
+    </head>
+    <body>
+        <h1>Payments Page</h1>
+        <form method="post">
+            {% csrf_token %}
+            {% for den in denomi %}
+                <b>{{ den }}</b><input type="number"><br />
+            {% endfor %}
+            <input type="submit" />
+        </form>
+    </body>
+</html>
