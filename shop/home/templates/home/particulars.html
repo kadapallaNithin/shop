@@ -1,0 +1,30 @@
+{% extends 'home/base.html' %}
+{% block content %}
+    <a href='{% url 'bills' %}'>Bills List</a>
+    <div>Bill No.{{ view.kwargs.id }}</div>
+    {% if particulars %}
+        <div style='float: right;'>{{ particulars.first.bill.date }}</div>
+        <br />
+        <hr />
+        <table>
+            <tr>
+                <td>Name</td>
+                <td>Market Rate</td>
+                <td>Our Rate</td>
+                <td>Quantity</td>
+                <td>Amount</td>
+            </tr>
+            {% for p in particulars %}
+            <tr>
+                <td>{{ p.rate_fk.product }}</td>
+                <td>{{p.rate_fk.rate }}</td>
+                <td>{{ p.rate }}</td>
+                <td>{{ p.quantity }}</td>
+                <td>{{ p.amount }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        No particulars!
+    {% endif %}
+{% endblock %}

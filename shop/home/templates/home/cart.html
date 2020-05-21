@@ -1,0 +1,131 @@
+{% extends "./base.html" %}
+{% block content %}
+{% block extra_style %}
+<style>
+    .inp_num{
+        max-width: 100px;
+    }
+    .product_chk{
+        color: forestgreen;
+    }
+</style>
+{% endblock %}
+<h1>Cart</h1>
+<button onclick="delete_selected()">Delete selected</button>
+<datalist id='products'>
+    {% for i in products %}
+    <option value='{{ i.id }}' >{{ i.name }} {{ i.rate }}</option>
+    {% endfor %}
+</datalist>
+<table id='cart'>
+    <tr>
+        <td><input type='checkbox' onchange="select_all(this)" /></td>
+        <td>Particulars</td>
+        <td>Rate</td>
+        <td>Quantity</td>
+        <td>Amount</td>
+    </tr>
+    <tr id='first'>
+        <td>
+            <input type="checkbox" class='product_chk'  />
+
+        </td>
+        <td>
+
+            <input list='products' onselect="fillup(this);" />
+            <!--select >    
+            </select-->
+        </td>
+        <td>
+            <input type="number" class='inp_num' value=0 />
+        </td>
+        <td>
+            <input type="number" class='inp_num' value=1 />
+        </td>
+        <td class='amount'>0</td>
+        <button onclick="delete_product(this)">-</button>
+    </tr>
+</table>
+<button onclick="add_product()">+</button>
+
+Total : <b id='total_id'>0</b>
+
+<script>
+    var opts = [ {% for i in products %}
+    [{{ i.id }},"{{ i.name }}",{{ i.rate }}],
+    {% endfor %} ];
+    function record_for_id(id){
+        console.log('id is');
+        console.log(id);
+
+        for(var i=0; i<opts.length; i++){
+            if(opts[i][0] == id){
+                return opts[i];
+            }
+        }
+        return -1;
+    }
+    function fillup(optn){
+        var x = record_for_id(parseInt(optn.value));
+        console.log('a '+x);
+        if(x!==-1){
+            optn.value = x[1];
+            optn.parentElement.parentElement.children[2].children[0].value = x[2];
+            optn.parentElement.parentElement.children[4].innerHTML = x[2];
+        }
+        update_total();
+    }
+</script>
+<script>
+    var products = document.getElementById('first').innerHTML;
+    var cart = document.getElementById('cart');
+    document.getElementsByTagName('body')[0].addEventListener("keypress",keyboard_shortcuts);
+    var n;
+    
+    function add_product(){
+        var x = document.createElement('tr');
+        x.innerHTML = products;
+        cart.appendChild(x);//innerHTML += products;
+    }
+    function keyboard_shortcuts(e){
+        console.log(e.key);
+        if(e.key == '='){
+            add_product();
+        }else if(e.key == '-'){
+
+        }else if(e.key == 'Enter'){
+            for(var c  in cart.children){
+                console.log(c);
+            }
+        }
+    }
+    function delete_product(prd){
+        prd.parentNode.parentNode.parentNode.removeChild(prd.parentNode.parentNode);
+    }
+    function select_all(chk){
+        var t = chk.checked;
+        var chks = document.getElementsByClassName('product_chk');
+        for(var i=0; i<chks.length; i++){
+            chks[i].checked = t;
+        }
+    }
+    function delete_selected(){
+        var chks = document.getElementsByClassName('product_chk');
+        for(var i = 0; i< chks.length; i++){
+            if(chks[i].checked){
+                delete_product(chks[i]);
+            }
+        }
+    }
+    function update_total(){
+        var tbl = document.getElementsByTagName('table');
+        var amounts = document.getElementsByClassName('amount');
+        var total = 0;
+        console.log(amounts[0].innerHTML);
+        for(var a=0; a<amounts.length; a++){
+            total += parseFloat(amounts[a].innerText);
+        }
+        document.getElementById('total_id').innerHTML = total;
+    }
+</script>
+{% endblock %}

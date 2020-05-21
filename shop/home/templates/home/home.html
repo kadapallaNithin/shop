@@ -1,8 +1,67 @@
-<html>
+{% extends "./base.html" %}
+    {% block extra_style %}
+        <style>
+            .take{
+                max-width: 100px;
+            }
+            .return{
+                max-width: 100px;
+            }
+        </style>
+    {% endblock %}
+
+    {% block content %}
+        <h1>Payments Page</h1>
+    <form method="post">
+        {% csrf_token %}
+    <table>
+        {% for den in denomi %}
+        <tr><td>{{ den }}</td><td>X <input class='take' name='t{{ den }}' type="number" value=0 required /></td><td><input  class='return' name='r{{ den }}' type="number" value=0 required /></td></tr>
+        {% endfor %}
+    </table>
+        {% if total %}
+            <div class="container">Total :    {{ total }}</div>
+        {% endif %}
+        <input class="right" type="submit" />
+    </form>
+        <b id='take_id'></b> - <b id='return_id'></b> = <b id='total'></b>
+    <br />
+    <button onclick="check_both()">Check</button>
+    <a href="{% url 'cart' %}">Cart</a>
+    <script>
+        function check_total(cls,id){
+            var inp = document.getElementsByClassName(cls);
+            var total = 0;
+            for(var i = 0; i<inp.length - 1; i++){
+                //console.log(total);
+                //console.log(inp[i]);
+                //console.log(parseInt(inp[i].name)*inp[i].value);
+                total += parseInt(inp[i].name.substring(1))*inp[i].value;
+            }
+            //console.log("total is "+total);
+            document.getElementById(id).innerText = total;
+            return total;
+        }
+        function check_both(){
+//            console.log(x+' '+y);
+            document.getElementById('total').innerText =  check_total('take','take_id') - check_total('return','return_id');
+        }
+        (function (){check_both();})();
+
+    </script>
+
+{% endblock content %}
+<!--html>
     <head>
+        {% if title %}
         <title>
-            Payments Page
+            Shop - {{ title }} Page
         </title>
+        {% else %}
+        <title>
+            Shop Page
+        </title>
+        {% endif %}
     </head>
     <body>
         <h1>Payments Page</h1>
@@ -14,4 +73,4 @@
             <input type="submit" />
         </form>
     </body>
-</html>
+</html-->
