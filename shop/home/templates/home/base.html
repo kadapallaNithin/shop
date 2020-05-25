@@ -22,12 +22,33 @@
                 color: grey;
                 background: linear-gradient(#fa2,#ff0);
             }
+            .btn{
+                background-color:skyblue;
+                color: white;
+                text-decoration: none;
+                margin: 1px;
+                padding: 3px;
+                border-radius: 5px;
+                border: 1px solid grey;
+            }
+            .links{
+                padding-bottom: 3px;
+            }
+            .btn:hover{
+                background-color: white;
+                color:pink;
+            }
         </style>
         {% block extra_style %}
         {% endblock %}
     </head>
     <body >
         <div class='header'><h2>Sri Laxmi Venkateswara Traders</h2></div>
+        <div class="links">
+            <a href="{% url 'products' %}" class="btn">Products</a>
+            <a href="{% url 'bills' %}" class='btn'>Bills</a>
+            <a href="{% url 'new_bill' %}" class='btn'>New Bill</a>
+        </div>
         <div class="container">
 
             {% block content %}{% endblock %}

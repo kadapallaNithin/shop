@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.urls import reverse
 # Create your models here.
 
 class Village(models.Model):
@@ -58,6 +58,8 @@ class Bill(models.Model):
     due = models.DecimalField(max_digits=10, decimal_places=2,default=0)
     def __str__(self):
         return str(self.customer)+' - '+str(self.total)#str(self.date)#
+    def get_absolute_url(self):
+        return reverse('bill_particular',kwargs={'id':self.id})
 class Particular(models.Model):
     '''bill - in which the particular is in,
        rate_fk - the particular and its rate,

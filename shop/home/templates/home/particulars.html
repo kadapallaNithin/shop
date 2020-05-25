@@ -1,4 +1,19 @@
 {% extends 'home/base.html' %}
+{% block extra_style %}
+<style>
+    .inp_num{
+        max-width: 100px;
+    }
+    .product_chk{
+        color: forestgreen;
+    }
+    input{
+        border: none;
+        border-bottom: 1px solid teal;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
     <a href='{% url 'bills' %}'>Bills List</a>
     <div>Bill No.{{ view.kwargs.id }}</div>
@@ -6,9 +21,19 @@
         <div style='float: right;'>{{ particulars.first.bill.date }}</div>
         <br />
         <hr />
-        <table>
+    {% else %}
+        No particulars!
+    {% endif %}
+    <datalist id='products'>
+        {% for i in products %}
+        <option value='{{ i.id }}' >{{ i.name }}</option>
+        {% endfor %}
+    </datalist>
+    <form method="POST">
+        <table id='cart'>
             <tr>
-                <td>Name</td>
+                <td><input type='checkbox' style='visibility: hidden;' onchange="select_all(this)" /></td>
+                <td>Particulars</td>
                 <td>Market Rate</td>
                 <td>Our Rate</td>
                 <td>Quantity</td>
@@ -16,15 +41,151 @@
             </tr>
             {% for p in particulars %}
             <tr>
+                <td></td>
                 <td>{{ p.rate_fk.product }}</td>
                 <td>{{p.rate_fk.rate }}</td>
                 <td>{{ p.rate }}</td>
                 <td>{{ p.quantity }}</td>
-                <td>{{ p.amount }}</td>
+                <td class='amount0'>{{ p.amount }}</td>
             </tr>
             {% endfor %}
+
+            <tr id='first'>
+                <td>
+                    <input type="checkbox" style='visibility: hidden;' class='product_chk' />
+                    <button onclick="delete_product(this)">-</button>
+                
+                </td>
+                <td>
+                
+                    <input list='products'  onblur="fillup(this)" />
+                    <!--select >    
+                            </select-->
+                </td>
+                <td>0</td>
+                <td>
+                    <input type="number" class='inp_num' value=0 onblur="update_particular(this);update_total();" />
+                </td>
+                <td>
+                    <input type="number" class='inp_num' value=1 onblur="update_particular(this);update_total();" />
+                </td>
+                <td class='amount1'>0</td>
+            </tr>
         </table>
-    {% else %}
-        No particulars!
-    {% endif %}
+        <input type='submit' class='btn' value='Bill' />
+    </form>
+    <button onclick="add_product()">+</button>
+    
+    Total : <b id='total_id'>0</b>
+        
+    <!-- <a href="{% url 'particular' %}">New Particular</a>
+    <button onclick="delete_selected()">Delete selected</button> -->
+
+    <script>
+        document.getElementsByTagName('body')[0].onload = function(){update_total();};
+        var opts = { {% for i in products %}
+        {{ i.id }}:"{{ i.name }}",
+        {% endfor %} };
+        var rates = {
+            {% for r in rates %}
+            "{{ r.product.id }}":{{ r.rate }},
+            {% endfor %}
+        };
+        function record_for_id(id){
+            //console.log('id is');
+            //console.log(id);
+    
+            for(var i=0; i<opts.length; i++){
+                if(opts[i][0] == id){
+                    return opts[i];
+                }
+            }
+            return -1;
+        }
+        function fillup(optn){
+            // var x = record_for_id(parseInt(optn.value));
+            // //console.log('a '+x);
+            // if(x!==-1){
+            //     optn.value = x[1];
+            //     optn.parentElement.parentElement.children[2].children[0].value = x[2];
+            //     optn.parentElement.parentElement.children[4].innerHTML = x[2];
+            // }
+            var r = rates[optn.value];
+            if(r == undefined){
+                alert('Rate not defined for product with id : '+optn.value+",("+opts[optn.value]+")");
+            }else{
+                optn.value = opts[optn.value];
+                optn.parentElement.parentElement.children[2].innerHTML = r;
+                optn.parentElement.parentElement.children[3].children[0].value = r;
+                optn.parentElement.parentElement.children[5].innerHTML = r;
+                update_total();
+            }
+        }
+        function update_particular(field){
+            var y = field.parentElement.parentElement.children;
+            y[5].innerHTML = y[4].children[0].value*y[3].children[0].value;
+        }
+    </script>
+    <script>
+        var products = document.getElementById('first').innerHTML;
+        var cart = document.getElementById('cart');
+        document.getElementsByTagName('body')[0].addEventListener("keypress",keyboard_shortcuts);
+        var n;
+        
+        function add_product(){
+            var x = document.createElement('tr');
+            x.innerHTML = products;
+            cart.appendChild(x);//innerHTML += products;
+        }
+        function keyboard_shortcuts(e){
+            console.log(e.key);
+            if(e.key == '='){
+                add_product();
+            }else if(e.key == '-'){
+    
+            }else if(e.key == 'Enter'){
+                for(var c  in cart.children){
+                    console.log(c);
+                }
+            }
+        }
+        function delete_product(prd){
+            prd.parentNode.parentNode.parentNode.removeChild(prd.parentNode.parentNode);
+        }
+        function select_all(chk){
+            var t = chk.checked;
+            var chks = document.getElementsByClassName('product_chk');
+            for(var i=0; i<chks.length; i++){
+                chks[i].checked = t;
+            }
+        }
+        function delete_selected(){
+            var chks = document.getElementsByClassName('product_chk');
+            for(var i = 0; i< chks.length; i++){
+                if(chks[i].checked){
+                    delete_product(chks[i]);
+                }
+            }
+        }
+        function update_total(){
+            //var tbl = document.getElementsByTagName('table');
+            var total = [0,0];
+            for(var i=0; i<2; i++){
+                var amounts = document.getElementsByClassName('amount'+i);
+//                console.log(amounts[0].innerHTML);
+                for(var a=0; a<amounts.length; a++){
+                    total[i] += parseFloat(amounts[a].innerText);
+                }
+            }
+            var t  ='';
+            if(total[0] == 0){
+                t += total[1];
+            }else if(total[1] == 0){
+                t += total[0];
+            }else{
+                t += total[0]+' + '+total[1]+' = '+(total[0]+total[1]);
+            }
+            document.getElementById('total_id').innerHTML = t;
+        }
+    </script>
 {% endblock %}
