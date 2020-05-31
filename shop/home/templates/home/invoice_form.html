@@ -1,0 +1,31 @@
+{% extends 'home/base.html' %}
+{% block content %}
+    <form method="POST">
+        {% csrf_token %}
+        <datalist id='products_list'>
+            <option value=-1>New Product</option>
+            {% for p in products %}
+                <option value={{ p.id }}>{{ p.name }}</option> 
+            {% endfor %}
+        </datalist>
+        <input type="hidden" name="prod_id" value="-1" />
+        <input list='products_list' placeholder="Enter Product Name" onblur="fill_up(this)"/>
+        <input type="number" name='quantity' placeholder="Enter Quantity" required />
+        <div id='new_product'></div>
+        <input type="number" name="rate" placeholder="Enter rate" required />
+        <input type="submit" value="next" />
+    </form>
+    <script>
+        function fill_up(li){
+            if(li.value == -1){
+                new_product.innerHTML = "<input type='name' name='name' placeholder='Enter new product name' required />";
+            }else{
+                new_product.innerHTML = "";
+                document.getElementsByName('prod_id')[0].value = li.value;
+            }
+        }
+        // function submit_form(){
+        //     document.forms[0].submit();
+        // }
+    </script>
+{% endblock %}

@@ -31,27 +31,88 @@
                 border-radius: 5px;
                 border: 1px solid grey;
             }
-            .links{
-                padding-bottom: 3px;
+            .alert{
+                padding: 3px 4px;
+                width: 50%;
+                margin-left: 25%;
+                background-color: blue;/* lightblue;*/
+                color:white;
             }
             .btn:hover{
                 background-color: white;
                 color:pink;
             }
+            .links{
+                padding-bottom: 3px;
+            }
+            body{
+                background: -webkit-gradient(linear,left top, right bottom , from(lightgreen), to(greenyellow)) fixed;/* linear-gradient(lightgreen,greenyellow);*/
+                color: maroon;
+            }
+            /* form{
+                margin: 10 10%;
+                padding-left: 3px;
+                width: 60%;
+                border: 2px solid lightgrey;
+                border-radius: 10px;
+            } */
+            td{
+                text-align: center;
+                border-right: 1px solid rgba(0,0,0,0.2);
+                border-top: 1px solid rgba(0,0,0,0.2);
+                border-radius: 5px;
+
+            }
+            td:hover{
+                color : skyblue;
+            }
+            tr:hover{
+                background-color: rgba(0,0,0,0.5);
+                color:whitesmoke;
+            }
+            tr:nth-child(1) {
+                background-color: rgba(0,43,33,0.2);
+                color: white;
+            }
+            .time{
+                /*width: 2px;
+                visibility: hidden;
+                background-color: black;
+                overflow-y:hidden;
+                color : white;*/
+                display: none;
+            }
+            .date:hover .time{
+                display: inline;
+            }
+
         </style>
-        {% block extra_style %}
-        {% endblock %}
+        <style>
+            {% block extra_style %}
+            {% endblock %}
+        </style>
     </head>
     <body >
         <div class='header'><h2>Sri Laxmi Venkateswara Traders</h2></div>
         <div class="links">
             <a href="{% url 'products' %}" class="btn">Products</a>
             <a href="{% url 'bills' %}" class='btn'>Bills</a>
+            <a href="{% url 'invoices' %}" class='btn'>Invoices</a>
+            <a href="{% url 'customers' %}" class='btn'>Customers</a>
+            <a href="/admin/home/payment" target="blank" class="btn">Payments</a>
+            <a href="{% url 'new_rate' %}" class='btn'>New Rate</a>
             <a href="{% url 'new_bill' %}" class='btn'>New Bill</a>
+            <a href="{% url 'new_invoice' %}" class='btn'>New Invoice</a>
         </div>
         <div class="container">
-
+            {% if messages %}
+                {% for message in messages %}
+                  <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+      
             {% block content %}{% endblock %}
+            {% block paginator %}{% endblock %}
         </div>
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

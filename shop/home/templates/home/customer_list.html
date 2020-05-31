@@ -1,0 +1,28 @@
+{% extends 'home/list.html' %}
+{% block content %}
+    <h2>Customers List ({{ page_obj.paginator.count }})</h2>
+    {% if customers %}
+        <table>
+            <tr>
+                <td>Id</td>
+                <td>Name</td>
+                <td>Address</td>
+                <td>Due</td>
+                <td>Phone</td>
+                <td>Email</td>
+            </tr>
+            {% for c in customers %}
+                <tr>
+                    <td>{{ c.id }}</td>
+                    <td><a href='#'>{{ c.name }}</a></td>
+                    <td>{{ c.address }}</td>
+                    <td>{{ c.due }}</td>
+                    <td>{{ c.phone }}</td>
+                    <td>{{ c.email }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        No Customers till now.
+    {% endif %}
+{% endblock %}

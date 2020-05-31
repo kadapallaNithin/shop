@@ -15,10 +15,13 @@
 {% endblock %}
 
 {% block content %}
-    <a href='{% url 'bills' %}'>Bills List</a>
     <div>Bill No.{{ view.kwargs.id }}</div>
     {% if particulars %}
-        <div style='float: right;'>{{ particulars.first.bill.date }}</div>
+        <!-- Due : {{ particulars.first.bill.due }} -->
+        <div>{{ particulars.first.bill.customer }}</div>
+
+        <div style='float: right;'><span class="date">{{ particulars.first.bill.date.date }}<span class="time">,{{ particulars.first.bill.date.time }}</span></span></div>
+        
         <br />
         <hr />
     {% else %}
@@ -29,21 +32,22 @@
         <option value='{{ i.id }}' >{{ i.name }}</option>
         {% endfor %}
     </datalist>
-    <form method="POST">
+    <form method="POST" action="{% url 'new_particular' view.kwargs.id %}">
+        {% csrf_token %}
         <table id='cart'>
             <tr>
-                <td><input type='checkbox' style='visibility: hidden;' onchange="select_all(this)" /></td>
+                <!-- <td><input type='checkbox' style='visibility: hidden;' onchange="select_all(this)" /></td> -->
                 <td>Particulars</td>
-                <td>Market Rate</td>
-                <td>Our Rate</td>
+                <!-- <td>Market Rate</td> -->
+                <td>Rate</td>
                 <td>Quantity</td>
                 <td>Amount</td>
             </tr>
             {% for p in particulars %}
             <tr>
-                <td></td>
-                <td>{{ p.rate_fk.product }}</td>
-                <td>{{p.rate_fk.rate }}</td>
+                <!-- <td></td> -->
+                <td>{{ p.rate_fk.product.name }}</td>
+                <!-- <td>{{p.rate_fk.rate }}</td> -->
                 <td>{{ p.rate }}</td>
                 <td>{{ p.quantity }}</td>
                 <td class='amount0'>{{ p.amount }}</td>
@@ -51,32 +55,43 @@
             {% endfor %}
 
             <tr id='first'>
-                <td>
+                <!-- <td>
                     <input type="checkbox" style='visibility: hidden;' class='product_chk' />
                     <button onclick="delete_product(this)">-</button>
                 
-                </td>
+                </td> -->
                 <td>
-                
-                    <input list='products'  onblur="fillup(this)" />
-                    <!--select >    
+                    <input type="hidden" name="particular" value=0 /> 
+                    <input list='products'  onblur="fill_up(this)" />
+                    <!--select >
                             </select-->
                 </td>
-                <td>0</td>
+                <!-- <td>0</td> -->
                 <td>
-                    <input type="number" class='inp_num' value=0 onblur="update_particular(this);update_total();" />
+                    <input type="number" name="rate" class='inp_num' value=0 onblur="update_particular(this);update_total();" />
+                    <input type="hidden" name="rate_fk" value=0 />
                 </td>
                 <td>
-                    <input type="number" class='inp_num' value=1 onblur="update_particular(this);update_total();" />
+                    <input type="number" name="quantity" class='inp_num' value=1 onblur="update_particular(this);update_total();" />
                 </td>
-                <td class='amount1'>0</td>
+                <td class='amount1'>
+                    <input type="number"  name='amount' value=0 contenteditable="false" />
+                    <input type='submit' class='btn' value='add' />
+                </td>
+                
             </tr>
         </table>
-        <input type='submit' class='btn' value='Bill' />
     </form>
-    <button onclick="add_product()">+</button>
-    
+    <!-- <button onclick="add_product()">+</button> -->
     Total : <b id='total_id'>0</b>
+    {% if particulars %}
+    Due : {{ particulars.first.bill.due }}
+    <form  method="POST" action="{% url 'payment' particulars.first.bill.id %}">
+        {% csrf_token %}
+        <input type="hidden" name='amount' value="{{ particulars.first.bill.due }}" />
+        <input class="btn" type="submit" value="Pay {{ particulars.first.bill.due }}" />    
+    </form>
+    {% endif %}
         
     <!-- <a href="{% url 'particular' %}">New Particular</a>
     <button onclick="delete_selected()">Delete selected</button> -->
@@ -88,9 +103,12 @@
         {% endfor %} };
         var rates = {
             {% for r in rates %}
-            "{{ r.product.id }}":{{ r.rate }},
+            "{{ r.product.id }}":[{{ r.rate }},{{ r.id }}],
             {% endfor %}
         };
+        function submit_form(){
+            document.forms[0].submit();
+        }
         function record_for_id(id){
             //console.log('id is');
             //console.log(id);
@@ -102,7 +120,8 @@
             }
             return -1;
         }
-        function fillup(optn){
+        function fill_up(optn){
+            //fillup(optn)
             // var x = record_for_id(parseInt(optn.value));
             // //console.log('a '+x);
             // if(x!==-1){
@@ -111,28 +130,59 @@
             //     optn.parentElement.parentElement.children[4].innerHTML = x[2];
             // }
             var r = rates[optn.value];
-            if(r == undefined){
+            if((r == undefined || r[0] == undefined) ){
                 alert('Rate not defined for product with id : '+optn.value+",("+opts[optn.value]+")");
             }else{
+                console.log('DOne');
+                document.getElementsByName('particular')[0].value = optn.value;
                 optn.value = opts[optn.value];
-                optn.parentElement.parentElement.children[2].innerHTML = r;
-                optn.parentElement.parentElement.children[3].children[0].value = r;
-                optn.parentElement.parentElement.children[5].innerHTML = r;
+                //following if add_product is available
+                //optn.parentElement.parentElement.children[2].innerHTML = r;
+                // optn.parentElement.parentElement.children[2].children[0].value = r[0];
+                // optn.parentElement.parentElement.children[2].children[1].value = r[1]; 
+                // optn.parentElement.parentElement.children[4].children[0].value = r[0];
+                document.getElementsByName('rate')[0].value = r[0];
+                document.getElementsByName('rate_fk')[0].value = r[1];
+                document.getElementsByName('amount')[0].value = r[0];
                 update_total();
             }
         }
         function update_particular(field){
-            var y = field.parentElement.parentElement.children;
-            y[5].innerHTML = y[4].children[0].value*y[3].children[0].value;
+            //var y = field.parentElement.parentElement.children;
+            //y[4].children[0].value = y[3].children[0].value*y[2].children[0].value;
+            document.getElementsByName('amount')[0].value = (document.getElementsByName('quantity')[0].value)*parseFloat(document.getElementsByName('rate')[0].value);
+        }
+        function update_total(){
+            //var tbl = document.getElementsByTagName('table');
+            var total = [0,0];
+            for(var i=0; i<2; i++){
+                var amounts = document.getElementsByClassName('amount'+i);
+//                console.log(amounts[0].innerHTML);
+                for(var a=0; a<amounts.length; a++){
+                    if(i==0)
+                        total[i] += parseFloat(amounts[a].innerText);
+                    else
+                        total[i] += parseFloat(amounts[a].children[0].value)
+                }
+            }
+            var t  ='';
+            if(total[0] == 0){
+                t += total[1];
+            }else if(total[1] == 0){
+                t += total[0];
+            }else{
+                t += total[0]+' + '+total[1]+' = '+(total[0]+total[1]);
+            }
+            document.getElementById('total_id').innerHTML = t;
         }
     </script>
-    <script>
+    <!-- script>
         var products = document.getElementById('first').innerHTML;
         var cart = document.getElementById('cart');
         document.getElementsByTagName('body')[0].addEventListener("keypress",keyboard_shortcuts);
         var n;
         
-        function add_product(){
+        function add_product_not_now(){
             var x = document.createElement('tr');
             x.innerHTML = products;
             cart.appendChild(x);//innerHTML += products;
@@ -167,25 +217,6 @@
                 }
             }
         }
-        function update_total(){
-            //var tbl = document.getElementsByTagName('table');
-            var total = [0,0];
-            for(var i=0; i<2; i++){
-                var amounts = document.getElementsByClassName('amount'+i);
-//                console.log(amounts[0].innerHTML);
-                for(var a=0; a<amounts.length; a++){
-                    total[i] += parseFloat(amounts[a].innerText);
-                }
-            }
-            var t  ='';
-            if(total[0] == 0){
-                t += total[1];
-            }else if(total[1] == 0){
-                t += total[0];
-            }else{
-                t += total[0]+' + '+total[1]+' = '+(total[0]+total[1]);
-            }
-            document.getElementById('total_id').innerHTML = t;
-        }
-    </script>
+        
+    </script -->
 {% endblock %}

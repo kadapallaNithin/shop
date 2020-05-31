@@ -7,27 +7,45 @@
             .return{
                 max-width: 100px;
             }
+            
         </style>
     {% endblock %}
-
     {% block content %}
-        <h1>Payments Page</h1>
     <form method="post">
+        <h3>Payment</h3>
+        {% if bill %}
+            Bill {{ bill.id }}
+            <div>
+                Customer : {{ bill.customer.name }}<br />
+                Customer Due : {{ bill.customer.due }}<br />
+                Bill Due : {{ bill.due }}
+                <span class="date">{{ bill.date.date }}<span class="time"> {{ bill.date.time }}</span></span>
+            </div>
+        {% endif %}
+    
         {% csrf_token %}
-    <table>
-        {% for den in denomi %}
-        <tr><td>{{ den }}</td><td>X <input class='take' name='t{{ den }}' type="number" value=0 required /></td><td><input  class='return' name='r{{ den }}' type="number" value=0 required /></td></tr>
-        {% endfor %}
+        <table>
+            {% for den in denomi %}
+            <tr>
+                <td>{{ den }}</td>
+                <td>X <input class='take' name='t{{ den }}' type="number" value=0 onblur="check_both()" required /></td>
+                <td><input  class='return' name='r{{ den }}' type="number" value=0  onblur="check_both();" required /></td>
+            </tr>
+            {% endfor %}
     </table>
         {% if total %}
             <div class="container">Total :    {{ total }}</div>
         {% endif %}
-        <input class="right" type="submit" />
+        <div>
+            <b id='take_id'></b> - <b id='return_id'></b> = <b id='total'></b>
+        </div>
+        <div>
+            Amount : <input type="text" value="{{ bill.due }}" name='amount' placeholder="Enter amount" />
+            <input class="right" type="submit" value="Pay"/>
+
+        </div>
+
     </form>
-        <b id='take_id'></b> - <b id='return_id'></b> = <b id='total'></b>
-    <br />
-    <button onclick="check_both()">Check</button>
-    <a href="{% url 'cart' %}">Cart</a>
     <script>
         function check_total(cls,id){
             var inp = document.getElementsByClassName(cls);
@@ -44,7 +62,9 @@
         }
         function check_both(){
 //            console.log(x+' '+y);
-            document.getElementById('total').innerText =  check_total('take','take_id') - check_total('return','return_id');
+            var amount = check_total('take','take_id') - check_total('return','return_id')
+            document.getElementById('total').innerText =  amount;
+            document.getElementsByName('amount')[0].value = amount;
         }
         (function (){check_both();})();
 

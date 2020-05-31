@@ -1,0 +1,27 @@
+{% extends 'home/list.html' %}
+{% block content %}
+    <h2>Invoice List ({{ page_obj.paginator.count }})</h2>
+    {% if invoices %}
+        <table>
+            <tr>
+                <td>No.</td>
+                <td>Product</td>
+                <td>Quantity</td>
+                <td>Rate</td>
+                <td>Date</td>
+            </tr>
+            {% for i in invoices %}
+                <tr>
+                    <td>{{ i.id }}</td>
+                    <td>{{ i.product.name }}</td>
+                    <td>{{ i.quantity }}</td>
+                    <td>{{ i.rate }}</td>
+                    <td><span class="date">{{ i.date.date }}<span class="time">,{{ i.date.time }}</span></span></td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        No Invoice till now.
+    {% endif %}
+    
+{% endblock %}

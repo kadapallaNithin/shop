@@ -1,39 +1,26 @@
-{% extends 'home/base.html' %}
+{% extends 'home/list.html' %}
 {% block content %}
     <h2>Bills List ({{ page_obj.paginator.count }})</h2>
-    <table>
-        <tr>
-            <td>No.</td>
-            <td>Customer</td>
-            <td>Total</td>
-            <td>Date</td>
-        </tr>
-        {% for b in bill %}
+    {% if bill %}
+        <table>
             <tr>
-                <td>{{ b.id }}</td>
-                <td><a href='{% url 'bill_particular' b.id %}'>{{b.customer}}</a></td>
-                <td>{{ b.total }}</td>
-                <td>{{ b.date }}</td>
+                <td>No.</td>
+                <td>Customer</td>
+                <td>Total</td>
+                <td>Due</td>
+                <td>Date</td>
             </tr>
-        {% endfor %}
-    </table>
-    <div>
-        {% if is_paginated %}
-            {% if page_obj.has_previous %}
-                <a href='?page=1'>&lt;&lt;</a>
-                <a href="?page={{ page_obj.previous_page_number }}">&lt;</a>
-            {% endif %}
-            {% for num in page_obj.paginator.page_range %}
-                {% if page_obj.number == num %}
-                    <b>{{ num }} of {{ page_obj.paginator.num_pages }}</b>
-                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                    <a href="?page={{ num }}">{{ num }}</a>
-                {% endif %}
+            {% for b in bill %}
+                <tr>
+                    <td>{{ b.id }}</td>
+                    <td><a href='{% url 'bill_particular' b.id %}'>{{b.customer}}</a></td>
+                    <td>{{ b.total }}</td>
+                    <td><a href='{% url 'payment' b.id %}'>{{ b.due }}</a></td>
+                    <td><span class="date">{{ b.date.date }}<span class="time">,{{ b.date.time }}</span></span></td>
+                </tr>
             {% endfor %}
-            {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}">&gt;</a>
-                <a href='?page={{ page_obj.paginator.num_pages }}'>&gt;&gt;</a>
-            {% endif %}
-        {% endif %}
-    </div>
+        </table>
+    {% else %}
+        No bills till now.
+    {% endif %}
 {% endblock %}

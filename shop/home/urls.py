@@ -15,14 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from .views import ProductListView, BillListView, BillParticularsListView, BillCreateView, ParticularCreateView
+from .views import ProductListView, BillListView, BillParticularsListView, CustomerListView, ParticularCreateView, InvoiceListView # BillCreateView,
 from . import views
 urlpatterns = [
-    path('',views.index,name='home'),
+    path('payment/<int:bill_id>/',views.payment,name='payment'),
 #    path('cart/',views.cart,name='cart'),#see bill_particular
     path('products/',ProductListView.as_view(),name='products'),
     path('bills/',BillListView.as_view(),name='bills'),
+    path('customers/',CustomerListView.as_view(),name='customers'),
     path('particular/',ParticularCreateView.as_view(),name='particular'),
-    path('new-bill',BillCreateView.as_view(),name='new_bill'),
-    path('bill/<int:id>/',BillParticularsListView.as_view(),name='bill_particular')
+    path('new_particular/<int:bill_id>/',views.add_particular,name='new_particular'),
+    path('',views.bill_create,name='new_bill'),#BillCreateView.as_view()
+    path('bill/<int:id>/',BillParticularsListView.as_view(),name='bill_particular'),
+    path('new_invoice/',views.invoice,name='new_invoice'),
+    path('invoices/',InvoiceListView.as_view(),name='invoices'),
+    path('new_rate/',views.rate_create,name='new_rate'),
 ]

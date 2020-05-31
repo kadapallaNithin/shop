@@ -1,0 +1,42 @@
+{% extends 'home/base.html' %}
+{% block content %}
+<form method="POST">
+    {% csrf_token %}
+    <h3>New Rate</h3>
+    {% if product %}
+        <input type="hidden" name='prod_id' value=-1 />
+        Rate for {{ product.name }}
+    {% elif products %}
+    <datalist id='products_list'>
+        <!-- <option value='-1'>New Product</option> -->
+        {% for p in products %}
+        <option value="{{ p.id }}">{{ p.name }}</option>
+        {% endfor %}
+    </datalist>
+
+    <input type="hidden" name='prod_id' value=-1 />
+    <input list="products_list" placeholder="Enter Product name" onblur="fill_up(this);" />
+    <div id='data'></div>
+    {% endif %}
+    <input type="text" name="rate" placeholder="Enter Rate" required />
+    <input type='submit' value='submit'  />
+</form>
+<script>
+    var products = {
+        {% for p in products %}
+        "{{ p.id }}":"{{ p.name }}",
+        {% endfor %}
+    };
+    function fill_up(li){
+        // var d = document.getElementById('data');
+        // if(li.value == -1){
+        //     document.getElementsByName('prod_id')[0].value = -1;
+        //     li.value = "New Product";
+        //     d.innerHTML = "<input type='text' placeholder='name' name='name' /><input list='address_list' name='address_id' placeholder='Enter address' /><input type='text' maxlength=10 placeholder='phone' /> <input type='email' placeholder='email' />"
+        // }else{
+            document.getElementsByName('prod_id')[0].value = li.value;
+            li.value = products[li.value];
+        //}
+    }
+</script>
+{% endblock %}

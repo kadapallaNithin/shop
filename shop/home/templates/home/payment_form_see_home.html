@@ -1,8 +1,17 @@
 {% extends 'home/base.html' %}
 {% block content %}
-<form method="POST" onsubmit="check_new_data()">
+<form method="POST">
     {% csrf_token %}
-    <h3>New Bill</h3>
+    <!-- <h3>Payment</h3>
+    {% if bill %}
+        Bill {{ bill.id }}
+        <div>
+            Customer : {{ bill.customer.name }}
+            <span class="date">bill.date.date<span class="time"> bill.date.time</span></span>
+        </div>
+    {% endif %} 
+    Amount : <input type="text" value="" placeholder="Enter amount"/> -->
+    <!-- 
     <datalist id='customers_list'>
         <option value='-1'>New Customer</option>
         {% for c in customers %}
@@ -16,18 +25,17 @@
         {% endfor %}
     </datalist>
     <input type="hidden" name='cust_id' value=-1 />
-    <input list="customers_list" id="customer_name" placeholder="Enter Customer name" onblur="fill_up(this);" />
-    <div id='data'></div>
+    <input list="customers_list" placeholder="Enter Customer name" onblur="fill_up(this);" />
+    <div id='data'></div> -->
 
-    <input type='submit' value='submit'  />
+    <input type='submit' value='Pay'  />
 </form>
-<script>
+<!-- <script>
     var customers = {
         {% for c in customers %}
         "{{ c.id }}":"{{ c }}",
         {% endfor %}
     };
-
     function fill_up(li){
         var d = document.getElementById('data');
         if(li.value == -1){
@@ -40,17 +48,5 @@
             document.forms[0].submit();
         }
     }
-    function check_new_data(){
-        alert('hh');
-        var val = document.getElementById('customer_name').value;
-        var addr = document.getElementById('address');
-        var addr_val;
-        if(addr)
-            addr_val = addr.value;
-        if(val == "New Customer" || val == "undefined" ||  val == "-1" || addr_val == "New address" || addr_val == "-1"){
-            alert('fill data correct');
-        }
-        alert(val);
-    }
-</script>
+</script> -->
 {% endblock %}

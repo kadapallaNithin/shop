@@ -5,16 +5,36 @@
         <tr>
             <td>Id</td>
             <td>Name</td>
-            <td>Rate</td>
             <td>Quantity</td>
         </tr>
         {% for p in products %}
             <tr>
                 <td>{{ p.id }}</td>
                 <td>{{ p.name }}</td>
-                <td>{{ p.rate }}</td>
                 <td>{{ p.quantity }}</td>
             </tr>
         {% endfor %}
+    </table>
+        <h3>Rates</h3>
+    <table>
+            <tr>
+                <!-- <td>RateId</td>
+                <td>ProductId</td> -->
+                <td>Name</td>
+                <td>Rate</td>
+                <td>Quantity</td>
+                <td>Effective From</td>
+            </tr>
+            {% for r in rates %}
+        <tr>
+            <!-- <td>{{ r.id }}</td>
+            <td>{{ r.product.id }}</td> -->
+            <td>{{ r.name }}</td>
+            <td>{{ r.rate }}</td>
+            <td>{{ r.quantity }}</td>
+            <td ><span class="date">{{ r.date.date }}<span class="time">@ {{ r.date.time}}</span></span></td>
+        </tr>
+        {% endfor %}
+
     </ul>
 {% endblock %}
