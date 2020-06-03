@@ -52,6 +52,11 @@ def payment(request,bill_id):
             messages.error(request,"Bill does not exists")
     return render(request,'home/home.html',context)#HttpResponse("Hi! Nithin")
 
+class PaymentsListView(ListView):
+    model = Payment
+    fields = ['customer','bill','amount','date','remarks']
+    context_object_name = "payments"
+
 class ProductListView(ListView):
     model = Product
     context_object_name = 'products'
@@ -130,7 +135,8 @@ def bill_create(request):
                 else:
                     email = ''
                 address_id = int(post['address_id'])
-                customer = Customer.objects.create(name=name,phone=phone,email=email,address_id=address_id)
+                address = Village.objects.get(pk=address_id)
+                customer = Customer.objects.create(name=name,phone=phone,email=email,address=address)
             else:
                 customer = Customer.objects.get(pk=cust_id)
             bill = Bill.objects.create(customer=customer,total=0,due=0)
@@ -138,10 +144,10 @@ def bill_create(request):
         except KeyError:
             return render(request,'home/error.html',{"message":"Invalid data"})  
         except ValueError:
-            return render(request,'home/error.html',{"message":"Invalid data got name instead of id"})
-        except IntegrityError :
+            return render(request,'home/error.html',{"message":"Invalid data. Got name instead of id"})
+        except Village.DoesNotExist :
             messages.error(request,"Please check address")
-            return render(request,'home/error.html',{"message":"Invalid data got name instead of id"})
+            return render(request,'home/error.html',{"message":"Invalid data. Village is not selected properly. Try selecting again."})
  
         except Customer.DoesNotExist:
             return render(request,'home/error.html',{'message':'contact nithin customer does not exist'})
@@ -234,7 +240,7 @@ def invoice(request):
         except Product.DoesNotExist:
             return render(request,'home/error.html',{"message":'Call nithin and say "error at invoice product does not exist"'})
         except ValueError:
-            return render(request,'home/error.html',{"message":"invalid data"})
+            return render(request,'home/error.html',{"message":"invalid data"+prod_id})
         except KeyError:
             return render(request,'home/error.html',{"message":"Invalid data"})
     else:

@@ -1,0 +1,28 @@
+{% extends 'home/list.html' %}
+{% block content %}
+    <h2>Payments List ({{ page_obj.paginator.count }})</h2>
+    {% if payments %}
+        <table>
+            <tr>
+                <td>No.</td>
+                <td>Customer</td>
+                <td>Bill (total - due)</td>
+                <td>Amount</td>
+                <td>Date</td>
+                <td>Remarks</td>
+            </tr>
+            {% for p in payments %}
+                <tr>
+                    <td>{{ p.id }}</td>
+                    <td>{{p.customer}}</td>
+                    <td><a href='{% url 'bill_particular' p.bill.id %}'>{{ p.bill.total }} - {{ p.bill.due }}</a></td>
+                    <td><a href=''>{{ p.amount }}</a></td>
+                    <td><span class="date">{{ p.date.date }}<span class="time">,{{ p.date.time }}</span></span></td>
+                    <td>{{ p.remarks }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        No bills till now.
+    {% endif %}
+{% endblock %}

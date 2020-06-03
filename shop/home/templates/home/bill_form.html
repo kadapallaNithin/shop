@@ -1,6 +1,6 @@
 {% extends 'home/base.html' %}
 {% block content %}
-<form method="POST" onsubmit="check_new_data()">
+<form method="POST" onsubmit="event.preventDefault(); check_new_data();">
     {% csrf_token %}
     <h3>New Bill</h3>
     <datalist id='customers_list'>
@@ -15,8 +15,9 @@
             <option value="{{ a.id }}">{{ a }}</option>
         {% endfor %}
     </datalist>
-    <input type="hidden" name='cust_id' value=-1 />
-    <input list="customers_list" id="customer_name" placeholder="Enter Customer name" onblur="fill_up(this);" />
+    <!-- <input type="hidden" name='cust_id' value=-1 /> -->
+    <input list="customers_list" name='cust_id' placeholder="Enter Customer name" onblur="fill_up();"  required='' />
+    <div id="customer_name"></div>
     <div id='data'></div>
 
     <input type='submit' value='submit'  />
@@ -28,29 +29,44 @@
         {% endfor %}
     };
 
-    function fill_up(li){
+    function fill_up(){//li){
+        var li = document.getElementsByName('cust_id')[0];
         var d = document.getElementById('data');
-        if(li.value == -1){
-            document.getElementsByName('cust_id')[0].value = -1;
-            li.value = "New Customer";
+        if(li.value == -1 ){//|| li.value == "New Customer" || li.value == "undefined" || li.value == undefined){
+            //document.getElementsByName('cust_id')[0].value = -1;
+            //li.value = "New Customer";
+            document.getElementById('customer_name').innerHTML = "New Customer";
             d.innerHTML = "<input type='text' placeholder='name' name='name' required /><input list='address_list' name='address_id' placeholder='Enter address' required /><input type='text' maxlength=10 placeholder='phone' /> <input type='email' placeholder='email' />"
         }else{
-            document.getElementsByName('cust_id')[0].value = li.value;
-            li.value = customers[li.value];
-            document.forms[0].submit();
+            //document.getElementsByName('cust_id')[0].value = li.value;
+            //li.value = customers[li.value];
+            d.innerHTML = "";
+            document.getElementById('customer_name').innerHTML = customers[li.value];
+//            document.forms[0].submit();
         }
     }
     function check_new_data(){
-        alert('hh');
-        var val = document.getElementById('customer_name').value;
-        var addr = document.getElementById('address');
+        //alert('hh');
+        var customer = document.getElementById('customer_name');
+        var name = customer.innerText;
+        var val = parseInt(document.getElementsByName('cust_id')[0].value);
+        var addr = document.getElementsByName('address_id')[0];
         var addr_val;
-        if(addr)
+        if(addr){
             addr_val = addr.value;
-        if(val == "New Customer" || val == "undefined" ||  val == "-1" || addr_val == "New address" || addr_val == "-1"){
-            alert('fill data correct');
         }
-        alert(val);
+        if((val == -1 || name == "New Customer") && addr_val==undefined ){
+            console.log("please fill up address");
+            console.log(addr);
+            fill_up();//customer);
+        }else if( isNaN(val) || val == undefined ){
+            alert('Enter correct customer name');
+        }else if(val == -1 && isNaN(parseInt(addr_val)) ){
+            alert("Enter correct address");
+        }else{
+            document.forms[0].submit();
+        }
+        //alert(val);
     }
 </script>
 {% endblock %}

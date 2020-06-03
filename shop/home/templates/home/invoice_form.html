@@ -17,7 +17,10 @@
     </form>
     <script>
         function fill_up(li){
+            console.log(li.value);
             if(li.value == -1){
+                console.log('hi');
+                document.getElementsByName('prod_id')[0].value = -1;
                 new_product.innerHTML = "<input type='name' name='name' placeholder='Enter new product name' required />";
             }else{
                 new_product.innerHTML = "";

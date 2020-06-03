@@ -1,0 +1,4 @@
+shop/db.sqlite3
+shop/home/__pycache__/models.cpython-37.pyc
+shop/home/__pycache__/urls.cpython-37.pyc
+shop/home/__pycache__/views.cpython-37.pyc

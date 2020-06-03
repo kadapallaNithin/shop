@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from .views import ProductListView, BillListView, BillParticularsListView, CustomerListView, ParticularCreateView, InvoiceListView # BillCreateView,
+from .views import ProductListView, BillListView, BillParticularsListView, CustomerListView, ParticularCreateView, InvoiceListView, PaymentsListView # BillCreateView,
 from . import views
 urlpatterns = [
     path('payment/<int:bill_id>/',views.payment,name='payment'),
+    path('payments/',PaymentsListView.as_view(),name='payments'),
 #    path('cart/',views.cart,name='cart'),#see bill_particular
     path('products/',ProductListView.as_view(),name='products'),
     path('bills/',BillListView.as_view(),name='bills'),
