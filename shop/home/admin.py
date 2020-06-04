@@ -8,12 +8,54 @@ class VillageResource(resources.ModelResource):
         model = Village
 class VillageAdmin(ImportExportModelAdmin):
     resource_class = VillageResource
-
-admin.site.register(Payment)
-admin.site.register(Customer)
 admin.site.register(Village, VillageAdmin)
-admin.site.register(Product)
-admin.site.register(Bill)
-admin.site.register(Particular)
-admin.site.register(Rate)
-admin.site.register(Invoice)
+
+class PaymentResource(resources.ModelResource):
+    class Meta:
+        model = Payment
+class PaymentAdmin(ImportExportModelAdmin):
+    resource_class = PaymentAdmin
+admin.site.register(Payment)
+
+class CustomerResouce(resources.ModelResource):
+    class Meta:
+        model = Customer
+class CustomerAdmin(ImportExportModelAdmin):
+    resource_class = CustomerResouce
+admin.site.register(Customer, CustomerAdmin)
+
+class ProductResource(resources.Resource):
+    class Meta:
+        model = Product
+class ProductAdmin(ImportExportModelAdmin):
+    resource_class = ProductResource
+admin.site.register(Product, ProductResource)
+
+class BillResouce(resources.Resource):
+    class Meta:
+        model = Bill
+class BillAdmin(ImportExportModelAdmin):
+    resource_class = BillResouce
+admin.site.register(Bill, BillAdmin)
+
+
+class ParticularResouce(resources.Resource):
+    class Meta:
+        model = Particular
+class ParticularAdmin(ImportExportModelAdmin):
+    resource_class = ParticularResouce
+admin.site.register(Particular, ParticularAdmin)
+
+class RateResouce(resources.Resource):
+    class Meta:
+        model = Rate
+class RateAdmin(ImportExportModelAdmin):
+    resource_class = RateResouce
+admin.site.register(Rate, RateAdmin)
+
+class InvoiceResouce(resources.Resource):
+    class Meta:
+        model = Invoice
+class InvoiceAdmin(ImportExportModelAdmin):
+    resource_class = InvoiceResouce
+admin.site.register(Invoice, InvoiceAdmin)
