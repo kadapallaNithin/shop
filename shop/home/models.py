@@ -22,7 +22,8 @@ class Customer(models.Model):
         if self.phone != -1:
             phone = self.phone
         return " "+self.name+", "+" "+self.address.village+" "+str(phone)
-
+    def get_absolute_url(self):
+        return reverse('customers')
 
 class Product(models.Model):
     'name - of the product, quantity - of the product in stock'
@@ -52,8 +53,9 @@ class Bill(models.Model):
         return reverse('bill_particular',kwargs={'id':self.id})
 
 class Payment(models.Model):
-    customer = models.ForeignKey(Customer,models.CASCADE,related_name='Payment')
-    bill = models.ForeignKey(Bill,models.SET_NULL,null=True)
+    #customer = models.ForeignKey(Customer,models.CASCADE,related_name='Payment') # redundant bill has this
+    bill = models.ForeignKey(Bill,models.CASCADE)
+    intrest_rate = models.DecimalField(max_digits=5,decimal_places=2,default=0)#default may be used in views.payment as 0
     date = models.DateTimeField(auto_now=True)
     amount = models.DecimalField(max_digits=10,decimal_places=2)
     remarks = models.TextField(default='')

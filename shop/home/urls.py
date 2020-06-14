@@ -15,20 +15,29 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from .views import ProductListView, BillListView, BillParticularsListView, CustomerListView, ParticularCreateView, InvoiceListView, PaymentsListView # BillCreateView,
+from .views import PaymentCreateView, ProductListView, BillListView, BillParticularsListView, CustomerBillsListView, CustomerListView, CustomerUpdateView, ParticularCreateView, InvoiceListView, PaymentsListView#, CustomerCreateView, VillageCreateView # BillCreateView,
 from . import views
 urlpatterns = [
     path('payment/<int:bill_id>/',views.payment,name='payment'),
+#    path('payment/<int:bill_id>/',PaymentCreateView.as_view(),name='payment'),
     path('payments/',PaymentsListView.as_view(),name='payments'),
 #    path('cart/',views.cart,name='cart'),#see bill_particular
     path('products/',ProductListView.as_view(),name='products'),
     path('bills/',BillListView.as_view(),name='bills'),
+#    path('customer/add/',CustomerCreateView.as_view(),name='add_customer'),
+    path('customer/<int:id>/bills/',CustomerBillsListView.as_view(),name='customer_bills'),
     path('customers/',CustomerListView.as_view(),name='customers'),
+    path('customer/<int:pk>/',CustomerUpdateView.as_view(),name='customer_update'),
     path('particular/',ParticularCreateView.as_view(),name='particular'),
     path('new_particular/<int:bill_id>/',views.add_particular,name='new_particular'),
     path('',views.bill_create,name='new_bill'),#BillCreateView.as_view()
     path('bill/<int:id>/',BillParticularsListView.as_view(),name='bill_particular'),
     path('new_invoice/',views.invoice,name='new_invoice'),
+    #path('new_invoice/',views.InvoiceCreate.view,name='new_invoice'),
     path('invoices/',InvoiceListView.as_view(),name='invoices'),
-    path('new_rate/',views.rate_create,name='new_rate'),
+    path('new_rate/<int:prod_id>/',views.rate_create,name='new_rate'),
+    path('export/<str:model_name>',views.export,name='export'),
+    path('export_list/',views.export_list,name='export_list'),
+    path('village/',views.village_create,name='new_village'),
+    path('villages/',views.village_list,name='villages'),
 ]

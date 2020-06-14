@@ -1,6 +1,6 @@
 {% extends 'home/base.html' %}
 {% block content %}
-    <h2>Stock</h2>
+    <h4>Stock</h4>
     <table>
         <tr>
             <td>Id</td>
@@ -9,13 +9,13 @@
         </tr>
         {% for p in products %}
             <tr>
-                <td>{{ p.id }}</td>
+                <td><a href="{% url 'new_rate' p.id %}">{{ p.id }}</a> </td>
                 <td>{{ p.name }}</td>
                 <td>{{ p.quantity }}</td>
             </tr>
         {% endfor %}
     </table>
-        <h3>Rates</h3>
+        <h4>Rates</h4>
     <table>
             <tr>
                 <!-- <td>RateId</td>
@@ -30,11 +30,12 @@
             <!-- <td>{{ r.id }}</td>
             <td>{{ r.product.id }}</td> -->
             <td>{{ r.name }}</td>
-            <td>{{ r.rate }}</td>
+            <td><a href="{% url 'new_rate' r.product.id %}">{{ r.rate }}</a></td>
             <td>{{ r.quantity }}</td>
             <td ><span class="date">{{ r.date.date }}<span class="time">@ {{ r.date.time}}</span></span></td>
         </tr>
         {% endfor %}
 
     </ul>
+    </table>
 {% endblock %}

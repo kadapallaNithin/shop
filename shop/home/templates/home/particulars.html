@@ -16,17 +16,10 @@
 
 {% block content %}
     <div>Bill No.{{ view.kwargs.id }}</div>
-    {% if particulars %}
-        <!-- Due : {{ particulars.first.bill.due }} -->
-        <div>{{ particulars.first.bill.customer }}</div>
-
-        <div style='float: right;'><span class="date">{{ particulars.first.bill.date.date }}<span class="time">,{{ particulars.first.bill.date.time }}</span></span></div>
-        
-        <br />
-        <hr />
-    {% else %}
-        No particulars!
-    {% endif %}
+    <div>Customer : {{ bill.customer }}</div>
+    <div style='float: right;'><span class="date">{{ bill.date.date }}<span class="time">,{{ bill.date.time }}</span></span></div>
+    <br />
+    <hr />
     <datalist id='products'>
         {% for i in products %}
         <option value='{{ i.id }}' >{{ i.name }}</option>
@@ -89,9 +82,10 @@
     <form  method="POST" action="{% url 'payment' particulars.first.bill.id %}">
         {% csrf_token %}
         <input type="hidden" name='amount' value="{{ particulars.first.bill.due }}" />
-        <input class="btn" type="submit" value="Pay {{ particulars.first.bill.due }}" />    
+        <input type="hidden" name="intrest_rate" value="0" />
+        <input class="btn" type="submit" value="Pay {{ particulars.first.bill.due }} @ 0 intrest rate" />    
     </form>
-    <a href="{% url 'payment' particulars.first.bill.id %}" class="btn">Pay some amount</a>
+    <a href="{% url 'payment' particulars.first.bill.id  %}" class="btn">Pay some amount</a>
     {% endif %}
     <!-- <a href="{% url 'particular' %}">New Particular</a>
     <button onclick="delete_selected()">Delete selected</button> -->

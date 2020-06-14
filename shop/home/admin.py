@@ -14,48 +14,48 @@ class PaymentResource(resources.ModelResource):
     class Meta:
         model = Payment
 class PaymentAdmin(ImportExportModelAdmin):
-    resource_class = PaymentAdmin
-admin.site.register(Payment)
+    resource_class = PaymentResource
+admin.site.register(Payment,PaymentAdmin)
 
-class CustomerResouce(resources.ModelResource):
+class CustomerResource(resources.ModelResource):
     class Meta:
         model = Customer
 class CustomerAdmin(ImportExportModelAdmin):
-    resource_class = CustomerResouce
+    resource_class = CustomerResource
 admin.site.register(Customer, CustomerAdmin)
 
-class ProductResource(resources.Resource):
+class ProductResource(resources.ModelResource):
     class Meta:
         model = Product
 class ProductAdmin(ImportExportModelAdmin):
     resource_class = ProductResource
-admin.site.register(Product, ProductResource)
+admin.site.register(Product, ProductAdmin)
 
-class BillResouce(resources.Resource):
+class BillResource(resources.ModelResource):
     class Meta:
         model = Bill
 class BillAdmin(ImportExportModelAdmin):
-    resource_class = BillResouce
+    resource_class = BillResource
 admin.site.register(Bill, BillAdmin)
 
 
-class ParticularResouce(resources.Resource):
+class ParticularResource(resources.ModelResource):
     class Meta:
         model = Particular
 class ParticularAdmin(ImportExportModelAdmin):
-    resource_class = ParticularResouce
+    resource_class = ParticularResource
 admin.site.register(Particular, ParticularAdmin)
 
-class RateResouce(resources.Resource):
+class RateResource(resources.ModelResource):
     class Meta:
         model = Rate
 class RateAdmin(ImportExportModelAdmin):
-    resource_class = RateResouce
+    resource_class = RateResource
 admin.site.register(Rate, RateAdmin)
 
-class InvoiceResouce(resources.Resource):
+class InvoiceResource(resources.ModelResource):
     class Meta:
         model = Invoice
 class InvoiceAdmin(ImportExportModelAdmin):
-    resource_class = InvoiceResouce
+    resource_class = InvoiceResource
 admin.site.register(Invoice, InvoiceAdmin)

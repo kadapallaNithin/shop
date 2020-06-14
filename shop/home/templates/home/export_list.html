@@ -1,0 +1,21 @@
+{% extends 'home/base.html' %}
+{% block content %}
+<ul>
+    Download
+    <li>
+        <a href="{% url 'export' 'villages.xlsx' %}" download="">Villages</a>
+    </li>
+    <li>
+        <a href="{% url 'export' 'bills.xlsx' %}" download="">Bills</a>
+    </li>
+    <li>
+        <a href="{% url 'export' 'payments.xlsx' %}" download="">Payments</a>
+    </li>
+    <li>
+        <a href="{% url 'export' 'invoices.xlsx' %}" download="">Invoices</a>
+    </li>
+    <li>
+        <a href="{% url 'export' 'products.xlsx' %}" download="">Products</a>
+    </li>
+</ul>
+{% endblock %}

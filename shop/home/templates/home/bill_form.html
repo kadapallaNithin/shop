@@ -2,9 +2,9 @@
 {% block content %}
 <form method="POST" onsubmit="event.preventDefault(); check_new_data();">
     {% csrf_token %}
-    <h3>New Bill</h3>
+    <h4>New Bill</h4>
     <datalist id='customers_list'>
-        <option value='-1'>New Customer</option>
+   `     <option value='-1'>New Customer</option>
         {% for c in customers %}
         <option value="{{ c.id }}">{{ c }}</option>
         {% endfor %}
@@ -16,11 +16,12 @@
         {% endfor %}
     </datalist>
     <!-- <input type="hidden" name='cust_id' value=-1 /> -->
-    <input list="customers_list" name='cust_id' placeholder="Enter Customer name" onblur="fill_up();"  required='' />
+    
+    Customer Name : <input list="customers_list" name='cust_id' value="{{ cust_id }}" placeholder="Enter Customer name" onblur="fill_up();"  required='' />
     <div id="customer_name"></div>
     <div id='data'></div>
 
-    <input type='submit' value='submit'  />
+    <input type='submit' value='submit' class="btn"  />
 </form>
 <script>
     var customers = {
@@ -28,7 +29,11 @@
         "{{ c.id }}":"{{ c }}",
         {% endfor %}
     };
-
+    var addresses = {
+        {% for a in addresses %}
+        "{{ a.id }}": "{{ a }}",
+        {% endfor %}
+    };
     function fill_up(){//li){
         var li = document.getElementsByName('cust_id')[0];
         var d = document.getElementById('data');
@@ -36,7 +41,7 @@
             //document.getElementsByName('cust_id')[0].value = -1;
             //li.value = "New Customer";
             document.getElementById('customer_name').innerHTML = "New Customer";
-            d.innerHTML = "<input type='text' placeholder='name' name='name' required /><input list='address_list' name='address_id' placeholder='Enter address' required /><input type='text' maxlength=10 placeholder='phone' /> <input type='email' placeholder='email' />"
+            d.innerHTML = "Name :<input type='text' placeholder='name' name='name' value='{{ name }}' required />Village:<input list='address_list' name='address_id' value='{{ address_id }}' onblur='set_address();' placeholder='Enter address' required /> <a href='{% url 'new_village' %}' class='btn'>Add village</a><div id='address'></div>Phone:<input type='number' name='phone' value='{{ phone }}' maxlength=10 placeholder='phone' onblur='validatePhone()' /><div id='phnval'></div> Email:<input type='email' name='email' value='{{ email }}' placeholder='email' />"
         }else{
             //document.getElementsByName('cust_id')[0].value = li.value;
             //li.value = customers[li.value];
@@ -45,12 +50,48 @@
 //            document.forms[0].submit();
         }
     }
+    function set_address(){
+        var address =  addresses[document.getElementsByName('address_id')[0].value];
+        if(address == undefined ){
+            alert("Address not known ");
+        }
+        document.getElementById('address').innerHTML = address;
+    }
+    function validatePhone() {//removed parameter e
+        var phnS = document.getElementsByName('phone')[0].value;
+        var phnval = document.getElementById('phnval');
+//    if (phn > 1000000000 && phn <= 9999999999) {
+        if(phnS.length == 0 || phnS.length == 10){
+            phnval.innerHTML = ":)";
+	        //check_submit(true);
+        } else {
+            phnval.innerHTML = ":( <br>length of phone number should be 10";
+	//check_submit(false);
+        }
+        if (phnval.innerHTML == ":( <br>length of phone number should be 10") {
+            phnval.style.color = "red";
+
+//	check_submit(false);
+        } else {
+
+//	check_submit();
+        	phnval.style.color = "green";
+        }
+//    check_submit();
+    }
     function check_new_data(){
         //alert('hh');
         var customer = document.getElementById('customer_name');
         var name = customer.innerText;
         var val = parseInt(document.getElementsByName('cust_id')[0].value);
         var addr = document.getElementsByName('address_id')[0];
+        var phone = document.getElementsByName('phone')[0];
+        if(phone != undefined){
+            if(phone.value == ''){
+                phone.value = -1;
+            }
+            phone = parseInt(phone.value);
+        }
         var addr_val;
         if(addr){
             addr_val = addr.value;

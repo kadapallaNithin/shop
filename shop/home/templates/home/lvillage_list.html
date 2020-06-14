@@ -13,7 +13,7 @@
             </tr>
             {% for c in customers %}
                 <tr>
-                    <td><a href="{% url 'customer_update' c.id %}">{{ c.id }}</a></td>
+                    <td>{{ c.id }}</td>
                     <td><a href="{% url 'customer_bills' c.id %}">{{ c.name }}</a></td>
                     <td>{{ c.address }}</td>
                     <td>{{ c.due }}</td>

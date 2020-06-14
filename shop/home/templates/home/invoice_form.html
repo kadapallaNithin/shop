@@ -1,6 +1,7 @@
 {% extends 'home/base.html' %}
 {% block content %}
-    <form method="POST">
+    <div class="center"><h5>New Invoice</h5></div>
+    <form method="POST" onsubmit="event.preventDefault(); check_new_data();">
         {% csrf_token %}
         <datalist id='products_list'>
             <option value=-1>New Product</option>
@@ -8,27 +9,64 @@
                 <option value={{ p.id }}>{{ p.name }}</option> 
             {% endfor %}
         </datalist>
-        <input type="hidden" name="prod_id" value="-1" />
-        <input list='products_list' placeholder="Enter Product Name" onblur="fill_up(this)"/>
-        <input type="number" name='quantity' placeholder="Enter Quantity" required />
+        <!-- <input type="hidden" name="prod_id_not_using" value="-1" /> -->
+        Product : <input list='products_list' name="prod_id" onblur="fill_up()" style="max-width: 200px;" placeholder="Enter Product Name" />
+        <span id='product_name'></span>
         <div id='new_product'></div>
-        <input type="number" name="rate" placeholder="Enter rate" required />
-        <input type="submit" value="next" />
+        Quantity : <input type="number" name='quantity' placeholder="Enter Quantity" required />
+        Rate : <input type="number" name="rate" placeholder="Enter rate" required />
+        <input type="submit" value="next" class="btn" />
     </form>
     <script>
-        function fill_up(li){
-            console.log(li.value);
+        var products = {
+            {% for p in products %}
+                "{{ p.id }}": "{{p.name}}",
+            {% endfor %}
+        };
+        function fill_up(){
+            var li = document.getElementsByName('prod_id')[0];
+            //console.log(li.value);
             if(li.value == -1){
-                console.log('hi');
-                document.getElementsByName('prod_id')[0].value = -1;
-                new_product.innerHTML = "<input type='name' name='name' placeholder='Enter new product name' required />";
+                //document.getElementsByName('prod_id')[0].value = -1;
+                document.getElementById('product_name').innerHTML = "New Product";
+                new_product.innerHTML = "New Product Name : <input type='name' name='name' placeholder='Enter new product name' required />";
             }else{
                 new_product.innerHTML = "";
-                document.getElementsByName('prod_id')[0].value = li.value;
+                document.getElementById('product_name').innerHTML = products[li.value];
+                //document.getElementsByName('prod_id')[0].value = li.value;
             }
         }
         // function submit_form(){
         //     document.forms[0].submit();
         // }
+    </script>
+    <script>
+            function check_new_data(){
+        //alert('hh');
+                var object = document.getElementById('product_name');
+                var name = object.innerText;
+                var val = parseInt(document.getElementsByName('prod_id')[0].value);
+                var prod_name = document.getElementsByName('name')[0];
+//                var addr = document.getElementsByName('address_id')[0];
+//                var addr_val;
+//                if(addr){
+//                    addr_val = addr.value;
+//                }
+//                if((val == -1 || name == "New Product")){ && addr_val==undefined ){
+                    //console.log("please fill up address");
+                    //console.log(addr);
+//                    fill_up();//customer);
+                //}else
+                if(val == -1 && (prod_name == undefined || prod_name == '')){// isNaN(parseInt(addr_val)) ){
+                    alert('Enter New Product Name');
+                    //alert("Enter correct address");
+                }else if(val != -1 && (isNaN(val) || val == undefined || products[val] == undefined) ){
+                    
+                    alert('Enter correct and existing product name');
+                }else{
+                    document.forms[0].submit();
+                }
+                  //alert(val);
+            }
     </script>
 {% endblock %}

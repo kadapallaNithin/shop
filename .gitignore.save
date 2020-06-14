@@ -1,10 +1,7 @@
 shop/db.sqlite3
+shop/home/static/
 shop/home/__pycache__/models.cpython-37.pyc
 shop/home/__pycache__/urls.cpython-37.pyc
 shop/home/__pycache__/views.cpython-37.pyc
 *.pyc
 *.env
-shop/home/static/home/materialize
-shop/home/static/home/jquery
-shop/home/static/home/bs
-shop/db.sqlite3

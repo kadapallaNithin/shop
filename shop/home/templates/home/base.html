@@ -1,3 +1,4 @@
+{% load static %}
 <html>
     <head>
         <meta charset="utf-8">
@@ -5,104 +6,39 @@
     
         <!-- Bootstrap CSS -->
         <!--link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"-->
-    
-    
+        <link rel="stylesheet" href="{% static 'home/bs/css/bootstrap.min.css' %}" />
+        <link rel="stylesheet" href="{% static 'home/materialize/css/materialize.min.css' %}" />
+        <script src="{% static 'home/materialize/js/materialize.min.js' %}"></script>
+        <script src="{% static 'home/jquery/jquery-3.4.1.min.js' %}"></script>
+        <title>
         {% if title %}
-        <title>
-            Shop - {{ title }} Page
-        </title>
-        {% else %}
-        <title>
-            Shop Page
-        </title>
+          {{ title }} - 
         {% endif %}
+        Sri Laxmi Venkateswara Traders
+        </title>
         <style>
-            .header{
-                text-align: center;
-                color: grey;
-                background: linear-gradient(#fa2,#ff0);
-            }
-            .btn{
-                background-color:skyblue;
-                color: white;
-                text-decoration: none;
-                margin: 1px;
-                padding: 3px;
-                border-radius: 5px;
-                border: 1px solid grey;
-            }
-            .alert{
-                padding: 3px 4px;
-                width: 50%;
-                margin-left: 25%;
-                background-color: blue;/* lightblue;*/
-                color:white;
-            }
-            .btn:hover{
-                background-color: white;
-                color:pink;
-            }
-            .links{
-                padding-bottom: 3px;
-            }
-            body{
-                background: -webkit-gradient(linear,left top, right bottom , from(lightgreen), to(greenyellow)) fixed;/* linear-gradient(lightgreen,greenyellow);*/
-                color: maroon;
-            }
-            /* form{
-                margin: 10 10%;
-                padding-left: 3px;
-                width: 60%;
-                border: 2px solid lightgrey;
-                border-radius: 10px;
-            } */
-            td{
-                text-align: center;
-                border-right: 1px solid rgba(0,0,0,0.2);
-                border-top: 1px solid rgba(0,0,0,0.2);
-                border-radius: 5px;
-
-            }
-            td:hover{
-                color : skyblue;
-            }
-            tr:hover{
-                background-color: rgba(0,0,0,0.5);
-                color:whitesmoke;
-            }
-            tr:nth-child(1) {
-                background-color: rgba(0,43,33,0.2);
-                color: white;
-            }
-            .time{
-                /*width: 2px;
-                visibility: hidden;
-                background-color: black;
-                overflow-y:hidden;
-                color : white;*/
-                display: none;
-            }
-            .date:hover .time{
-                display: inline;
-            }
 
         </style>
+        <!-- <link rel="stylesheet" type="text/css" href="{% static 'home/test.css' %}"> -->
+        <link rel="stylesheet" type="text/css" href="{% static 'home/main.css' %}">
         <style>
             {% block extra_style %}
             {% endblock %}
         </style>
     </head>
     <body >
-        <div class='header'><h2>Sri Laxmi Venkateswara Traders</h2></div>
-        <div class="links">
-            <a href="{% url 'products' %}" class="btn">Products</a>
-            <a href="{% url 'bills' %}" class='btn'>Bills</a>
-            <a href="{% url 'invoices' %}" class='btn'>Invoices</a>
-            <a href="{% url 'customers' %}" class='btn'>Customers</a>
-            <a href="{% url 'payments' %}"  class="btn">Payments</a>
-            <a href="{% url 'new_rate' %}" class='btn'>New Rate</a>
-            <a href="{% url 'new_bill' %}" class='btn'>New Bill</a>
-            <a href="{% url 'new_invoice' %}" class='btn'>New Invoice</a>
+        <div class='header center'><h3><marquee>Sri Laxmi Venkateswara Traders</marquee></h2></div>
+        <hr />
+        <div class="links center">
+            <a href="{% url 'products' %}" class="btn blue">Products</a>
+            <a href="{% url 'bills' %}" class='btn blue'>Bills</a>
+            <a href="{% url 'invoices' %}" class='btn blue'>Invoices</a>
+            <a href="{% url 'customers' %}" class='btn blue'>Customers</a>
+            <a href="{% url 'payments' %}"  class="btn blue">Payments</a>
+            <a href="{% url 'export_list' %}" class="btn blue">Download</a>
+            <a href="{% url 'new_bill' %}" class='btn blue'>New Bill</a>
+            <a href="/admin/home/village/" class="btn blue" target="blank">Villages</a>
+            <a href="{% url 'new_invoice' %}" class='btn blue'>New Invoice</a>
         </div>
         <div class="container">
             {% if messages %}
@@ -110,10 +46,13 @@
                   <div class="alert alert-{{ message.tags }}">{{ message }}</div>
                 {% endfor %}
             {% endif %}
-      
+            {% block datalist_form %}{% endblock %}
             {% block content %}{% endblock %}
             {% block paginator %}{% endblock %}
         </div>
+        <footer>
+            Copy Rights Sri Laxmi Venkateswara Traders, Banswada, Kamareddy, Telangana State - 503187.
+        </footer>
 <!-- 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>

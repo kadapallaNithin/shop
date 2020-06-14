@@ -1,6 +1,6 @@
 {% extends 'home/list.html' %}
 {% block content %}
-    <h2>Payments List ({{ page_obj.paginator.count }})</h2>
+    <h4>Payments List ({{ page_obj.paginator.count }})</h4>
     {% if payments %}
         <table>
             <tr>
@@ -14,15 +14,15 @@
             {% for p in payments %}
                 <tr>
                     <td>{{ p.id }}</td>
-                    <td>{{p.customer}}</td>
-                    <td><a href='{% url 'bill_particular' p.bill.id %}'>{{ p.bill.total }} - {{ p.bill.due }}</a></td>
-                    <td><a href=''>{{ p.amount }}</a></td>
+                    <td><a href="{% url 'customer_bills' p.bill.customer.id %}" >{{p.bill.customer}}</a></td>
+                    <td><a href="{% url 'bill_particular' p.bill.id %}">{{ p.bill.total }} - {{ p.bill.due }}</a></td>
+                    <td><a href="{% url 'payment' p.bill.id %}">{{ p.amount }}</a></td>
                     <td><span class="date">{{ p.date.date }}<span class="time">,{{ p.date.time }}</span></span></td>
                     <td>{{ p.remarks }}</td>
                 </tr>
             {% endfor %}
         </table>
     {% else %}
-        No bills till now.
+        No payments till now.
     {% endif %}
 {% endblock %}

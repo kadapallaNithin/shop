@@ -2,7 +2,7 @@
 {% block content %}
 <form method="POST">
     {% csrf_token %}
-    <h3>New Rate</h3>
+    <h4>New Rate</h4>
     {% if product %}
         <input type="hidden" name='prod_id' value=-1 />
         Rate for {{ product.name }}
@@ -19,7 +19,7 @@
     <div id='data'></div>
     {% endif %}
     <input type="text" name="rate" placeholder="Enter Rate" required />
-    <input type='submit' value='submit'  />
+    <input type='submit' value='submit' class="btn" />
 </form>
 <script>
     var products = {

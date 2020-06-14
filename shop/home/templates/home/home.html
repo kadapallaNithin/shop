@@ -1,14 +1,31 @@
 {% extends "./base.html" %}
     {% block extra_style %}
-        <style>
             .take{
+                color : green;
                 max-width: 100px;
+                border : 0px;
+                margin: 0px;
             }
             .return{
+                border : 0px;
+                margin: 0px;
+                color : red;
                 max-width: 100px;
             }
-            
-        </style>
+            input{
+                max-width: 50%;
+            }
+            tr{
+                width:60%;
+            }
+            td{
+                padding : 0;
+                max-width: 20%;
+                width : 20%;
+            }
+            form{
+                max-width : 400px;
+            }
     {% endblock %}
     {% block content %}
     <form method="post">
@@ -27,30 +44,53 @@
         <table>
             {% for den in denomi %}
             <tr>
-                <td>{{ den }}</td>
-                <td>X <input class='take' name='t{{ den }}' type="number" value=0 onblur="check_both()" required /></td>
-                <td><input  class='return' name='r{{ den }}' type="number" value=0  onblur="check_both();" required /></td>
+            <td class="den">
+                {{ den }} x
+            </td>
+            <td>
+                (<input class='take' name='t{{ den }}' type="number" value=0 onblur="check_both()" required />
+            </td>
+            <td>
+                   - <input  class='return' name='r{{ den }}' type="number" value=0  onblur="check_both();" required />)
+            </td>
             </tr>
             {% endfor %}
+            
     </table>
         {% if total %}
             <div class="container">Total :    {{ total }}</div>
         {% endif %}
         <div>
             <b id='take_id'></b> - <b id='return_id'></b> = <b id='total'></b>
+            <div>
+                Period : <b id='months'></b> <b id='days'></b>Days
+            </div>
+            <div>
+                <!-- not number because decimal values are not allowed for numbers -->
+                Intrest Rate :<input type="text" name="intrest_rate" onblur="set_amount();" value="0" required />
+                <span id='intrest_rate_message'></span>
+                <div>
+                    Principle Amount : <input id='principle' type='text' value="{{ bill.due }}" onblur="set_amount();" />
+                </div>
+                <div>
+                    <span id='intrest_amount_calc'> </span><b id="intrest_amount"></b>
+                    Payable : <span id='payable' style="color: green;"></span>
+                </div>
+            </div>
         </div>
         <div>
-            Amount : <input type="text" value="{{ bill.due }}" name='amount' placeholder="Enter amount" />
-            <input class="right" type="submit" value="Pay"/>
-
+            Amount : <input type="text" name='amount' placeholder="Enter amount" />
+            <input class="right btn" type="submit" value="Pay"/>
         </div>
-
     </form>
     <script>
+        var period_sec = {{ period.seconds }};
+        var period_days = {{ period.days }};
+        var period_months = parseFloat(period_days/30);
         function check_total(cls,id){
             var inp = document.getElementsByClassName(cls);
             var total = 0;
-            for(var i = 0; i<inp.length - 1; i++){
+            for(var i = 0; i<inp.length ; i++){
                 //console.log(total);
                 //console.log(inp[i]);
                 //console.log(parseInt(inp[i].name)*inp[i].value);
@@ -66,10 +106,36 @@
             document.getElementById('total').innerText =  amount;
             document.getElementsByName('amount')[0].value = amount;
         }
-        (function (){check_both();})();
-
+        function set_period(){
+            document.getElementById('days').innerHTML = period_days;
+            var m = parseInt(period_days/30);
+            if(m > 0){
+                document.getElementById('months').innerHTML = m.toString()+" Months ";
+            }
+        }
+        (function (){check_both();set_period();})();
+        function set_amount(){
+            check_both();
+//            var total = parseFloat(document.getElementById('total').innerText);
+            var intrest_rate = parseFloat(document.getElementsByName('intrest_rate')[0].value);
+            if(intrest_rate == undefined || isNaN(intrest_rate) || intrest_rate > 100 || intrest_rate < 0){
+                intrest_rate_message.innerHTML  = 'check intrest rate it should be between 0 and 100';
+            }else{
+                intrest_rate_message.innerHTML = "";
+            }
+            var intrest_amount;
+            var principle = parseFloat(document.getElementById('principle').value);
+//            if(intrest_rate > 0){
+                intrest_amount = principle*period_months*intrest_rate;
+                document.getElementById('intrest_amount_calc').innerText = '('+principle+' x '+intrest_rate+" x "+period_months+")/100 = ";
+                document.getElementById('intrest_amount').innerText = intrest_amount;
+                document.getElementById('')
+  //          }
+            var payable = principle + intrest_amount;
+            document.getElementById('payable').innerHTML = payable;
+            document.getElementsByName('amount')[0].value = payable;
+        }
     </script>
-
 {% endblock content %}
 <!--html>
     <head>

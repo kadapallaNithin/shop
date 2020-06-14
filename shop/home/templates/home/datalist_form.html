@@ -1,0 +1,67 @@
+{% extends 'home/base.html' %}
+{% block datalist_form %}
+<form method="POST" onsubmit="event.preventDefault();check_new_data();">
+    {% csrf_token %}
+    <h3>New {{ model_name }}</h3>
+    <datalist id='{{ model_name }}s_list'>
+        <option value='-1'>New {{ model_name }}</option>
+        {% for o in objects %}
+        <option value="{{ o.id }}">{{ o }}</option>
+        {% endfor %}
+    </datalist>
+    <input list="{{ model_name }}s_list" name='{{ model_name }}_id' placeholder="Enter {{ model_name }} name" onblur="fill_up();"  required='' />
+    <div id="{{ model_name }}_name"></div>
+    <div id='data'></div>
+
+    <input type='submit' value='submit'  />
+</form>
+<script>
+    var {{ model_name }}s = {
+        {% for o in objects %}
+        "{{ o.id }}":"{{ o }}",
+        {% endfor %}
+    };
+
+    function fill_up(){//li){
+        var li = document.getElementsByName('{{ model_name }}_id')[0];
+        var d = document.getElementById('data');
+        if(li.value == -1 ){//|| li.value == "New Customer" || li.value == "undefined" || li.value == undefined){
+            //document.getElementsByName('cust_id')[0].value = -1;
+            //li.value = "New Customer";
+            document.getElementById('{{ model_name }}_name').innerHTML = "New {{ model_name }}";
+            d.innerHTML = "<input type='text' placeholder='name' name='name' required /><input list='address_list' name='address_id' placeholder='Enter address' required /><input type='text' maxlength=10 placeholder='phone' /> <input type='email' placeholder='email' />"
+        }else{
+            //document.getElementsByName('cust_id')[0].value = li.value;
+            //li.value = customers[li.value];
+            d.innerHTML = "";
+            document.getElementById('{{ model_name }}_name').innerHTML = {{ model_name }}s[li.value];
+//            document.forms[0].submit();
+        }
+    }
+</script>
+<script>
+        function check_new_data(){
+        //alert('hh');
+            var {{ model_name }} = document.getElementById('{{ model_name }}_name');
+            var name = {{ model_name }}.innerText;
+            var val = parseInt(document.getElementsByName('{{ model_name }}_id')[0].value);
+    //var addr = document.getElementsByName('address_id')[0];
+    //var addr_val;
+    //if(addr){
+    //    addr_val = addr.value;
+    //}
+            if((val == -1 || name == "New {{ model_name }}") && addr_val==undefined ){
+                console.log("please fill up address");
+                console.log(addr);
+                fill_up();//customer);
+            }else if( isNaN(val) || val == undefined ){
+                alert('Enter correct {{ model_name }} name');
+        //}else if(val == -1 && isNaN(parseInt(addr_val)) ){
+          //  alert("Enter correct address");
+            }else{
+                document.forms[0].submit();
+            }
+        //alert(val);
+        }
+</script>
+{% endblock %}

@@ -16,11 +16,11 @@ def payment_effects(sender,instance,**kwargs):
         instance.customer.due += old.amount
         if instance.bill :
             instance.bill.due += old.amount
-    instance.customer.due -= instance.amount
+    instance.bill.customer.due -= instance.amount
     if instance.bill:
         instance.bill.due -= instance.amount
         instance.bill.save()
-    instance.customer.save()
+    instance.bill.customer.save()
 
 @receiver(pre_save,sender=Particular)
 def particular_effects(sender,instance, **kwargs):

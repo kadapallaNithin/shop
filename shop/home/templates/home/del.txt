@@ -1,0 +1,23 @@
+<!--div class="container">
+    {% if objects %}
+    <h4>{{ object_name }}s List ({{ page_obj.paginator.count }})</h4>
+        <table>
+            <tr>
+                {% for fld in fields %}
+                    <td>{{ fld }}</td>
+                {% endfor %}
+            </tr>
+            {% for obj in objects %}
+            <br />l
+                <tr>
+                    {{ obj }}
+                    {% for field, value in obj.fields.iteritems %}
+                        <td>d {{ field }} : {{ value }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        No {{ object_name }} till now.
+    {% endif %}
+</div-->
