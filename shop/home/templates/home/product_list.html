@@ -1,21 +1,25 @@
 {% extends 'home/base.html' %}
 {% block content %}
-    <h4>Stock</h4>
+    {% if without_rate %}
+    <h4>Products without rate</h4>
     <table>
         <tr>
             <td>Id</td>
             <td>Name</td>
             <td>Quantity</td>
         </tr>
-        {% for p in products %}
+        {% for p in without_rate %}
             <tr>
-                <td><a href="{% url 'new_rate' p.id %}">{{ p.id }}</a> </td>
-                <td>{{ p.name }}</td>
+                <td>{{ p.id }}</td>
+                <td><a href="{% url 'new_rate' p.id %}">{{ p.name }}</a></td>
                 <td>{{ p.quantity }}</td>
             </tr>
         {% endfor %}
     </table>
-        <h4>Rates</h4>
+    {% else %}
+            There is no product without rate.
+    {% endif %}
+    <h4>Products & Rates</h4>
     <table>
             <tr>
                 <!-- <td>RateId</td>

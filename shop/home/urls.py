@@ -21,6 +21,7 @@ urlpatterns = [
     path('payment/<int:bill_id>/',views.payment,name='payment'),
 #    path('payment/<int:bill_id>/',PaymentCreateView.as_view(),name='payment'),
     path('payments/',PaymentsListView.as_view(),name='payments'),
+    #path('payments/',views.payment_list,name='payments'),
 #    path('cart/',views.cart,name='cart'),#see bill_particular
     path('products/',ProductListView.as_view(),name='products'),
     path('bills/',BillListView.as_view(),name='bills'),
@@ -38,6 +39,7 @@ urlpatterns = [
     path('new_rate/<int:prod_id>/',views.rate_create,name='new_rate'),
     path('export/<str:model_name>',views.export,name='export'),
     path('export_list/',views.export_list,name='export_list'),
+    path('export_all/',views.export_all,name='export_all'),
     path('village/',views.village_create,name='new_village'),
     path('villages/',views.village_list,name='villages'),
 ]

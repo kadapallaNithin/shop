@@ -4,7 +4,7 @@ from django.utils.http import urlencode
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, UpdateView
-from home.admin import VillageResource, BillResource, PaymentResource, InvoiceResource, ProductResource 
+from home.admin import BillResource,CustomerResource, InvoiceResource,ParticularResource, PaymentResource, ProductResource, VillageResource
 from .models import Product, Bill, Particular, Rate, Customer, Invoice, Village, Payment
 from .forms import VillageCreateForm
 from decimal import Decimal
@@ -32,37 +32,59 @@ def village_create(request):
         form = VillageCreateForm()
     return render(request,'home/village_form.html',{"form":form})
 
-def village_list(request):
-    objects = Village.objects.all()
-    for obj in objects:
-        obj.fields = dict((field.name, field.value_to_string(obj)) for field in obj._meta.fields)#{'Village','Mandal','District'}
+def model_list(request,model,model_name):
+#    objects = Village.objects.all()
+    obj_fields = []
+    for obj in model.objects.all():
+        #obj.fields = 
+        obj_fields.append(dict((field.name, field.value_to_string(obj)) for field in obj._meta.fields))#{'Village','Mandal','District'}
     context = {
-        "objects": objects,
-        "fields": ['Village','Mandal','District'],
-        "object_name": "Village",
+        "object_name": model_name,
+        "object_fields": obj_fields,
     }
-    return render(request,'home/list.html',context)
+    if len(obj_fields) > 0:
+        context["fields"] = [field for field in obj_fields[0].keys()]#['id','Village','Mandal','District'],
+    return render(request,'home/model_list.html',context)
+
+def village_list(request):
+    return model_list(request,Village,"Village")
+
+def payment_list(request):
+    return model_list(request,Payment,"Payment")
 
 denomi = [2000,500,200,100,50,20,10]#,5,2,1
-
 
 def error(request,message):
     return render(request,'home/error.html',{"message":message})
 
 def export_list(request):
     return render(request,'home/export_list.html')
+def export_all(request):
+    resources = {"bills.xlsx": BillResource,"customers.xlsx":CustomerResource,"invoices.xlsx":InvoiceResource, "particulars.xlsx":ParticularResource,"payments.xlsx":PaymentResource,"products.xlsx":ProductResource,"villages.xlsx": VillageResource}
+    export_dir = "/home/nithin/Downloads/exports/"
+    for file_name,resource in resources.items():
+        f = open(export_dir+file_name,'wb')
+        f.write(resource().export().xlsx)
+        f.close()
+    messages.success(request,"See downloads at "+export_dir)
+    return redirect('products')
 def export(request,model_name):
     try:
-        if model_name == "villages.xlsx":
-            dataset = VillageResource().export()
-        elif model_name == "bills.xlsx":
+        if model_name == "bills.xlsx":
             dataset = BillResource().export()
-        elif model_name == "payments.xlsx":
-            dataset = PaymentResource().export()
+        elif model_name == "customers.xlsx":
+            dataset = CustomerResource().export()
         elif model_name == "invoices.xlsx":
             dataset = InvoiceResource().export()
+        elif model_name == "particulars.xlsx":
+            dataset = ParticularResource().export()
+        elif model_name == "payments.xlsx":
+            dataset = PaymentResource().export()
         elif model_name == "products.xlsx":
             dataset = ProductResource().export()
+        elif model_name == "villages.xlsx":
+            dataset = VillageResource().export()
+
         else:
             response = 'invalid url'
         response = dataset.xlsx
@@ -83,13 +105,13 @@ def payment(request,bill_id):
     return_total = 0
     if request.method == "POST":
         POST = request.POST
-        for i in list(POST.keys())[1:]:#POST.keys[0] is csrf_token
-        #print(POST[i])
-#        d.append(POST[i])
-            if i[0] == 'r':
-                return_total += int(POST[i]) * int(i[1:])
-            elif i[0] == 't':
-                taken_total += int(POST[i]) * int(i[1:])
+#         for i in list(POST.keys())[1:]:#POST.keys[0] is csrf_token
+#         #print(POST[i])
+# #        d.append(POST[i])
+#             if i[0] == 'r':
+#                 return_total += int(POST[i]) * int(i[1:])
+#             elif i[0] == 't':
+#                 taken_total += int(POST[i]) * int(i[1:])
     
     #context['POST'] = d 
         if bill_id == -1:
@@ -98,13 +120,15 @@ def payment(request,bill_id):
             try:
                 bill = Bill.objects.get(pk=bill_id)
                 # if 'intrest_rate' in request.POST:
-                intrest_rate = Decimal(request.POST['intrest_rate'])
+                intrest_rate = Decimal(POST['intrest_rate'])
                 # else:
                 #     intrest_rate = 0
-                amount = Decimal(request.POST['amount'])
+                amount = Decimal(POST['amount'])
+                remarks = ''
+                if 'remarks' in POST:
+                    remarks = POST['remarks']
                 #payment = Payment.objects.create(customer=bill.customer,bill=bill,amount=amount,intrest_rate=intrest_rate)
-                payment = Payment.objects.create(bill=bill,amount=amount,intrest_rate=intrest_rate)
-                
+                payment = Payment.objects.create(bill=bill,amount=amount,intrest_rate=intrest_rate,remarks=remarks)
                 messages.success(request,f"payment of Rs.{ payment.amount } successful ")
             except KeyError:
                 messages.error(request,"Amount or intrest not defined!")
@@ -134,7 +158,8 @@ class PaymentsListView(ListView):
     model = Payment
     fields = ['customer','bill','amount','date','remarks']
     context_object_name = "payments"
-    paginate_by = 10    
+    ordering = ['-date']
+    paginate_by = 10
 
 class ProductListView(ListView):
     model = Product
@@ -144,6 +169,7 @@ class ProductListView(ListView):
     def get_context_data(self):
         context = super().get_context_data()
         context['rates'] = Rate.objects.raw('SELECT r.id, p.name as name, r.rate, p.quantity, MAX(r.date)  FROM home_rate as r INNER JOIN home_product as p ON r.product_id = p.id GROUP BY p.id  ORDER BY r.date DESC')
+        context['without_rate'] = Product.objects.raw('SELECT * FROM home_product WHERE id not in (SELECT product_id FROM home_rate)')
         return context
 
 def rate_create(request,prod_id):

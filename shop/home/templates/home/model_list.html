@@ -1,0 +1,23 @@
+{% extends 'home/list.html' %}
+{% block content %}
+    <h4>{{ object_name }}s List ({{ page_obj.paginator.count }})</h4>
+    {% if object_fields %}
+    <table>
+        <tr>
+            {% for field in fields %}
+                <td>{{ field }}</td>
+            {% endfor %}
+        </tr>
+        {% for obj in object_fields %}
+        <tr>
+            {% for field, value in obj.items %}
+            <!-- obj.fields.iteritems -->
+                <td>{{ value }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        No Village is created till now.
+    {% endif %}
+{% endblock %}

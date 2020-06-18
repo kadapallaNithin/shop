@@ -11,15 +11,17 @@ from .models import Particular, Bill, Invoice, Payment
 
 @receiver(pre_save,sender=Payment)
 def payment_effects(sender,instance,**kwargs):
+    #t = (instance.date - instance.bill.date).days/30
+    #principle = instance.amount/(1+t*instance.intrest_rate/100)
     if instance.id:
         old = Payment.objects.get(pk=instance.id)
-        instance.customer.due += old.amount
-        if instance.bill :
-            instance.bill.due += old.amount
-    instance.bill.customer.due -= instance.amount
-    if instance.bill:
-        instance.bill.due -= instance.amount
-        instance.bill.save()
+        instance.bill.customer.due += old.amount
+        #if instance.bill :
+        instance.bill.due += old.amount
+    instance.bill.customer.due -= instance.amount #principle
+    #if instance.bill:
+    instance.bill.due -= instance.amount #principle
+    instance.bill.save()
     instance.bill.customer.save()
 
 @receiver(pre_save,sender=Particular)

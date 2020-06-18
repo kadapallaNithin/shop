@@ -20,7 +20,7 @@
     <div style='float: right;'><span class="date">{{ bill.date.date }}<span class="time">,{{ bill.date.time }}</span></span></div>
     <br />
     <hr />
-    <datalist id='products'>
+    <datalist id='products_list'>
         {% for i in products %}
         <option value='{{ i.id }}' >{{ i.name }}</option>
         {% endfor %}
@@ -54,21 +54,23 @@
                 
                 </td> -->
                 <td>
-                    <input type="hidden" name="particular" value=0 /> 
-                    <input list='products'  onblur="fill_up(this)" />
+                    <!-- <input type="hidden" name="particular" value=0 /> 
+                    <input list='products_list'  onblur="fill_up(this)" /> -->
+                    <input list='products_list' name="particular" onblur="fill_up()" required />
+                    <div id="product_name"></div>
                     <!--select >
                             </select-->
                 </td>
                 <!-- <td>0</td> -->
                 <td>
-                    <input type="number" name="rate" class='inp_num' value=0 onblur="update_particular(this);update_total();" />
-                    <input type="hidden" name="rate_fk" value=0 />
+                    <input type="number" name="rate" class='inp_num' value=0 onblur="update_particular(this);update_total();" required />
+                    <input type="hidden" name="rate_fk" value=0 required />
                 </td>
                 <td>
                     <input type="number" name="quantity" class='inp_num' value=1 onblur="update_particular(this);update_total();" />
                 </td>
                 <td class='amount1'>
-                    <input type="number"  name='amount' value=0 contenteditable="false" />
+                    <input type="number"  name='amount' value=0 contenteditable="false" required />
                     <input type='submit' class='btn' value='add' />
                 </td>
                 
@@ -92,7 +94,7 @@
 
     <script>
         document.getElementsByTagName('body')[0].onload = function(){update_total();};
-        var opts = { {% for i in products %}
+        var products = { {% for i in products %}
         {{ i.id }}:"{{ i.name }}",
         {% endfor %} };
         var rates = {
@@ -107,15 +109,17 @@
             //console.log('id is');
             //console.log(id);
     
-            for(var i=0; i<opts.length; i++){
-                if(opts[i][0] == id){
-                    return opts[i];
+            for(var i=0; i<products.length; i++){
+                if(products[i][0] == id){
+                    return products[i];
                 }
             }
             return -1;
         }
-        function fill_up(optn){
-            //fillup(optn)
+//        function fill_up(optn){
+        function fill_up(){
+            var optn = document.getElementsByName('particular')[0];
+            document.getElementById('product_name').innerText = products[optn.value];
             // var x = record_for_id(parseInt(optn.value));
             // //console.log('a '+x);
             // if(x!==-1){
@@ -125,11 +129,12 @@
             // }
             var r = rates[optn.value];
             if((r == undefined || r[0] == undefined) ){
-                alert('Rate not defined for product with id : '+optn.value+",("+opts[optn.value]+")");
+                alert('Rate not defined for product with id : '+optn.value+",("+products[optn.value]+")");
             }else{
                 console.log('DOne');
                 document.getElementsByName('particular')[0].value = optn.value;
-                optn.value = opts[optn.value];
+                //optn.value = products[optn.value];
+                
                 //following if add_product is available
                 //optn.parentElement.parentElement.children[2].innerHTML = r;
                 // optn.parentElement.parentElement.children[2].children[0].value = r[0];
@@ -171,15 +176,15 @@
         }
     </script>
     <!-- script>
-        var products = document.getElementById('first').innerHTML;
+        var products_node = document.getElementById('first').innerHTML;
         var cart = document.getElementById('cart');
         document.getElementsByTagName('body')[0].addEventListener("keypress",keyboard_shortcuts);
         var n;
         
         function add_product_not_now(){
             var x = document.createElement('tr');
-            x.innerHTML = products;
-            cart.appendChild(x);//innerHTML += products;
+            x.innerHTML = products_node;
+            cart.appendChild(x);//innerHTML += products_node;
         }
         function keyboard_shortcuts(e){
             console.log(e.key);

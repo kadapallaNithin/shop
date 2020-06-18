@@ -80,6 +80,9 @@
         </div>
         <div>
             Amount : <input type="text" name='amount' placeholder="Enter amount" />
+        </div>
+        <div>
+            Remarks :<input type="text" name="remarks" placeholder="Optional" /> 
             <input class="right btn" type="submit" value="Pay"/>
         </div>
     </form>
@@ -126,7 +129,7 @@
             var intrest_amount;
             var principle = parseFloat(document.getElementById('principle').value);
 //            if(intrest_rate > 0){
-                intrest_amount = principle*period_months*intrest_rate;
+                intrest_amount = principle*period_months*intrest_rate/100;
                 document.getElementById('intrest_amount_calc').innerText = '('+principle+' x '+intrest_rate+" x "+period_months+")/100 = ";
                 document.getElementById('intrest_amount').innerText = intrest_amount;
                 document.getElementById('')
