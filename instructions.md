@@ -9,9 +9,10 @@
     On successfull submission, you will be asked to set selling rate for the product.
 
 ### Products page.
-    Shows stock. 
-
+    Lists all products for which rate is not defined. By clicking on it, rate can be defined.
+    Shows rate, quantity and from when the rate is in effect of products for which rate is defined. By clicking on rate of particular product, it can be modified.
 
 ### Tips & tricks
     1. Tab for moving to next input, Shift+Tab for previous input, Enter for submit while woriking with forms.
     2. Hover i.e bring mouse on to date wherever you see, to see the time.
+    3. Table can be sorted based on column by clicking on it. Change from ascending to descending and vice versa by clicking again. Note that this is for records in current page only but not whole data. 

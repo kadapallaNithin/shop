@@ -3,14 +3,17 @@
     <h4>Payments List ({{ page_obj.paginator.count }})</h4>
     {% if payments %}
         <table>
+            <thead>
             <tr>
-                <td>No.</td>
-                <td>Customer</td>
-                <td>Bill (total - due)</td>
-                <td>Amount</td>
-                <td>Date</td>
-                <td>Remarks</td>
+                <th>No.</th>
+                <th>Customer</th>
+                <th>Bill (total - due)</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Remarks</th>
             </tr>
+            </thead>
+            <tbody>
             {% for p in payments %}
                 <tr>
                     <td>{{ p.id }}</td>
@@ -21,6 +24,7 @@
                     <td>{{ p.remarks }}</td>
                 </tr>
             {% endfor %}
+            </tbody>
         </table>
     {% else %}
         No payments till now.

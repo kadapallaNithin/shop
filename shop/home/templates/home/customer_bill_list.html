@@ -3,22 +3,26 @@
     <h4>Customer Bills List ({{ page_obj.paginator.count }})</h4>
     {% if bills %}
         <table>
-            <tr>
-                <td>No.</td>
-                <td>Customer</td>
-                <td>Total</td>
-                <td>Due</td>
-                <td>Date</td>
-            </tr>
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Customer</th>
+                    <th>Total</th>
+                    <th>Due</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
             {% for b in bills %}
                 <tr>
                     <td>{{ b.id }}</td>
                     <td><a href="#">{{b.customer}}</a></td>
                     <td><a href="{% url 'bill_particular' b.id %}">{{ b.total }}</a></td>
                     <td><a href="{% url 'payment' b.id %}">{{ b.due }}</a></td>
-                    <td><span class="date">{{ b.date.date }}<span class="time">,{{ b.date.time }}</span></span></td>
+                    <td><span class="date"><form method="POST" action="{% url 'bill_date_update' b.id %}"><input type="date" name="date" value="{{ b.date.date.isoformat }}" /> {% csrf_token %}<span class="time">,{{ b.date.time }}<input type="submit" value="Update"></span></form></span></td>
                 </tr>
             {% endfor %}
+            </tbody>
         </table>
     {% else %}
         No bills with 

@@ -1,0 +1,32 @@
+{% extends 'home/base.html' %}
+{% block content %}
+<form method="POST" onsubmit="event.preventDefault();check_unique();">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="add a category"  class="btn" />
+</form>
+<script>
+    var categories = [{% for c  in categories %}
+        "{{ c.name }}",
+        {% endfor %}
+    ];
+    var ask_confirm = true;
+    function check_unique(){
+        if(ask_confirm){
+            var category = document.getElementById('id_name').value;
+            for(var i in categories){
+                if(category.toLowerCase() == categories[i].toLowerCase() && ask_confirm){
+                    var a  = confirm("Category "+category+" already exists. Do you want to add another?");
+                    if(a){
+                        ask_confirm  = false;
+                        document.forms[0].submit();
+                    }else{
+                        return;
+                    }
+                }
+            }
+        }
+       document.forms[0].submit();
+    }
+</script>
+{% endblock %}

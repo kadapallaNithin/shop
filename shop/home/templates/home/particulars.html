@@ -22,31 +22,34 @@
     <hr />
     <datalist id='products_list'>
         {% for i in products %}
-        <option value='{{ i.id }}' >{{ i.name }}</option>
+        <option value='{{ i.id }}' >{{ i.name }} {{ i.contents }}</option>
         {% endfor %}
     </datalist>
     <form method="POST" action="{% url 'new_particular' view.kwargs.id %}">
         {% csrf_token %}
         <table id='cart'>
+            <thead>
             <tr>
-                <!-- <td><input type='checkbox' style='visibility: hidden;' onchange="select_all(this)" /></td> -->
-                <td>Particulars</td>
-                <!-- <td>Market Rate</td> -->
-                <td>Rate</td>
-                <td>Quantity</td>
-                <td>Amount</td>
+                <!-- <th><input type='checkbox' style='visibility: hidden;' onchange="select_all(this)" /></th> -->
+                <th>Particulars</th>
+                <!-- <th>Market Rate</th> -->
+                <th>Rate</th>
+                <th>Quantity</th>
+                <th>Amount</th>
             </tr>
+            </thead>
+            <tbody>
             {% for p in particulars %}
             <tr>
                 <!-- <td></td> -->
-                <td>{{ p.rate_fk.product.name }}</td>
+                <td>{{ p.rate_fk.product.name }} {{ p.rate_fk.product.contents }}</td>
                 <!-- <td>{{p.rate_fk.rate }}</td> -->
                 <td>{{ p.rate }}</td>
                 <td>{{ p.quantity }}</td>
                 <td class='amount0'>{{ p.amount }}</td>
             </tr>
             {% endfor %}
-
+            </tbody>
             <tr id='first'>
                 <!-- <td>
                     <input type="checkbox" style='visibility: hidden;' class='product_chk' />
@@ -95,7 +98,7 @@
     <script>
         document.getElementsByTagName('body')[0].onload = function(){update_total();};
         var products = { {% for i in products %}
-        {{ i.id }}:"{{ i.name }}",
+        {{ i.id }}:["{{ i.name }}","{{ i.contents }}"],
         {% endfor %} };
         var rates = {
             {% for r in rates %}
@@ -119,7 +122,7 @@
 //        function fill_up(optn){
         function fill_up(){
             var optn = document.getElementsByName('particular')[0];
-            document.getElementById('product_name').innerText = products[optn.value];
+            document.getElementById('product_name').innerText = products[optn.value][0]+','+products[optn.value][1];
             // var x = record_for_id(parseInt(optn.value));
             // //console.log('a '+x);
             // if(x!==-1){

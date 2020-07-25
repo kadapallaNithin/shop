@@ -5,12 +5,12 @@
     <h4>New Rate</h4>
     {% if product %}
         <input type="hidden" name='prod_id' value=-1 />
-        Rate for {{ product.name }}
+        Rate for {{ product.name }} {{ product.contents }}
     {% elif products %}
     <datalist id='products_list'>
         <!-- <option value='-1'>New Product</option> -->
         {% for p in products %}
-        <option value="{{ p.id }}">{{ p.name }}</option>
+        <option value="{{ p.id }}">{{ p.name }} {{ p.contents }}</option>
         {% endfor %}
     </datalist>
 

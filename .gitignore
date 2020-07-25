@@ -7,4 +7,6 @@ shop/home/__pycache__/views.cpython-37.pyc
 shop/home/static/home/materialize
 shop/home/static/home/jquery
 shop/home/static/home/bs
-shop/db.sqlite3
+*/migrations/*
+!*/migrations/__init__.py
+shop/config.py

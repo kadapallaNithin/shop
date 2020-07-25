@@ -2,44 +2,45 @@
 {% block content %}
     {% if without_rate %}
     <h4>Products without rate</h4>
-    <table>
-        <tr>
-            <td>Id</td>
-            <td>Name</td>
-            <td>Quantity</td>
-        </tr>
+    <ul>
         {% for p in without_rate %}
-            <tr>
-                <td>{{ p.id }}</td>
-                <td><a href="{% url 'new_rate' p.id %}">{{ p.name }}</a></td>
-                <td>{{ p.quantity }}</td>
-            </tr>
+            <li>{{ p.id }}.<a href="{% url 'new_rate' p.id %}">{{ p.name }} {{ p.contents }} ({{ p.quantity }})</a></li>
         {% endfor %}
-    </table>
+    </ul>
     {% else %}
             There is no product without rate.
     {% endif %}
+    {% if rates %}
     <h4>Products & Rates</h4>
     <table>
+        <thead>
             <tr>
-                <!-- <td>RateId</td>
-                <td>ProductId</td> -->
-                <td>Name</td>
-                <td>Rate</td>
-                <td>Quantity</td>
-                <td>Effective From</td>
+                <!-- <td>RateId</th>
+                <th>ProductId</th> -->
+                <th>Name</th>
+                <th>Contents</th>
+                <th>Rate</th>
+                <th>Quantity</th>
+                <th>Category</th>
+                <th>Rate Effective From</th>
             </tr>
+        </thead>
+        <tbody>
             {% for r in rates %}
         <tr>
             <!-- <td>{{ r.id }}</td>
             <td>{{ r.product.id }}</td> -->
             <td>{{ r.name }}</td>
+            <td>{{ r.contents }}</td>
             <td><a href="{% url 'new_rate' r.product.id %}">{{ r.rate }}</a></td>
             <td>{{ r.quantity }}</td>
+            <td>{{ r.product.category }}</td>
             <td ><span class="date">{{ r.date.date }}<span class="time">@ {{ r.date.time}}</span></span></td>
         </tr>
         {% endfor %}
-
-    </ul>
+        </tbody>
     </table>
+    {% else %}
+        There is no product with rate
+    {% endif %}
 {% endblock %}

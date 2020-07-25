@@ -22,11 +22,87 @@
     {% endif %}
 </div-->
 
+<!-- from base.html -->
+        <div class="nav-wrapper">
+            <a href="#" class="brand-logo">
+                Sri Laxmi Venkateswara Traders
+            </a>
+            <ul class="right hide-on-med-and-down">
+                <li>
+                    <a href="{% url 'products' %}">Products</a>
+                </li>
+                <li>
+                    <a href="{% url 'bills' %}">Bills</a>
+                </li>
+                <li>
+                    <a href="{% url 'invoices' %}">Invoices</a>
+                </li>
+                <li>
+                    <a href="{% url 'customers' %}">Customers</a>
+                </li>
+                <li>
+                    <a href="{% url 'payments' %}">Payments</a>
+                </li>
+                <li>
+                    <a href="{% url 'export_list' %}">Download</a>
+                </li>
+                <li>
+                    <a href="{% url 'new_bill' %}">New Bill</a>
+                </li>
+            <!-- <a href="{% url 'villages' %}" class="btn blue" >Villages</a> -->
+                <li>
+                    <a href="{% url 'new_invoice' %}">New Invoice</a>
+                </li>
+            </ul>
+        </div>
+        </nav>
 
 
 
 
+<!-- from views -->
+# def rate_create_notused(request,prod_id):
+#     if request.method == "POST":#
+#         try:
+#             # if 'prod_id' in request.GET:
+#             #     prod_id = int(request.GET['prod_id'])
+#             # else:
+#             #     prod_id = int(request.POST['prod_id'])
+#                 # if prod_id == -1:
+#                 #     Product.objects.create(name=request.POST['name'],)
 
+            
+#             product = get_object_or_404(Product,id=prod_id) #Product.objects.get(pk=prod_id)
+#             rate = Decimal(request.POST['rate'])
+#             rate = Rate.objects.create(product=product,rate=rate)
+#             messages.success(request,f"Successfully created rate for { product.name } @ { rate.rate }")
+
+#             if 'redirect' in request.GET:
+#                 return HttpResponseRedirect(request.GET['redirect'])
+#             return HttpResponseRedirect(reverse('products')) #render(request,'home/error.html',{"message":"success"+str(prod_id)})
+            
+#         # except KeyError:
+#         #     message = "invalid data"
+#         # except ValueError:
+#         #     message = "Invalid data got name instead of id"
+#         # except Product.DoesNotExist:
+#         #     message = "Product does not exist"
+#         # #if 'redirect' in request.POST:
+
+#         return HttpResponseRedirect(reverse('error',kwargs={"message":message})) #render(request,'home/error.html',{"message":message})
+#     else:
+#         if 'prod_id' in request.GET:
+#             try:
+#                 context = {
+#                     'product':Product.objects.get(pk=int(request.GET['prod_id']))
+#                 }
+#             except Product.DoesNotExist:
+#                 return render(request,'home/error.html',{"message":"Product with id "+request.GET['prod_id']+" doesn't exist"})
+#         else:
+#             context = {
+#                 'products': Product.objects.all(),
+#             }
+#         return render(request,'home/rate_form.html',context)
 
 
 <!-- from product_list.html -->

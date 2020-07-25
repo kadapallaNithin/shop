@@ -6,7 +6,12 @@
         <datalist id='products_list'>
             <option value=-1>New Product</option>
             {% for p in products %}
-                <option value={{ p.id }}>{{ p.name }}</option> 
+                <option value={{ p.id }}>{{ p.name }} {{ p.contents }}</option> 
+            {% endfor %}
+        </datalist>
+        <datalist id="category_list">
+            {% for c in categories %}
+            <option value="{{ c.id }}">{{ c.name }}</option>
             {% endfor %}
         </datalist>
         <!-- <input type="hidden" name="prod_id_not_using" value="-1" /> -->
@@ -20,20 +25,37 @@
     <script>
         var products = {
             {% for p in products %}
-                "{{ p.id }}": "{{p.name}}",
+                "{{ p.id }}": ["{{p.name}}","{{ p.category }}","{{ p.contents }}"],
             {% endfor %}
         };
+        var categories = {
+            {% for c in categories %}
+            "{{c.id}}":"{{c.name}}",
+            {% endfor %}
+        };
+        function set_category(){
+            var c = document.getElementsByName('category')[0].value;
+            var category = categories[c];
+            if(category == undefined){
+                category = "You should select the category not just typing it";
+            }
+            document.getElementById('category_name').innerHTML = category;
+        }
         function fill_up(){
             var li = document.getElementsByName('prod_id')[0];
             //console.log(li.value);
             if(li.value == -1){
                 //document.getElementsByName('prod_id')[0].value = -1;
                 document.getElementById('product_name').innerHTML = "New Product";
-                new_product.innerHTML = "New Product Name : <input type='name' name='name' placeholder='Enter new product name' required />";
+                new_product.innerHTML = "New Product Name : <input type='name' name='name' placeholder='Enter new product name' required /><br />Category :<input list='category_list'  style='max-width: 200px;' name='category' placeholder='cement, pesticide ...' onblur='set_category();' required /><span id='category_name'></span> or <a href=\'{% url 'new_category' %}\' class='btn'>Add a category</a><br />Contents : <input type='text' name='contents' placeholder='250ml, 10kg..' /><br />";
             }else{
                 new_product.innerHTML = "";
-                document.getElementById('product_name').innerHTML = products[li.value];
+                if(products[li.value] == undefined){
+                    document.getElementById('product_name').innerHTML  = "<br />*You should select the product name not just typing it";
+                }else{
+                    document.getElementById('product_name').innerHTML = products[li.value][0]+" "+products[li.value][2]+" , "+products[li.value][1];
                 //document.getElementsByName('prod_id')[0].value = li.value;
+                }
             }
         }
         // function submit_form(){
@@ -47,6 +69,8 @@
                 var name = object.innerText;
                 var val = parseInt(document.getElementsByName('prod_id')[0].value);
                 var prod_name = document.getElementsByName('name')[0];
+                var category = document.getElementsByName('category')[0];
+
 //                var addr = document.getElementsByName('address_id')[0];
 //                var addr_val;
 //                if(addr){
@@ -58,11 +82,13 @@
 //                    fill_up();//customer);
                 //}else
                 if(val == -1 && (prod_name == undefined || prod_name == '')){// isNaN(parseInt(addr_val)) ){
-                    alert('Enter New Product Name');
                     //alert("Enter correct address");
-                }else if(val != -1 && (isNaN(val) || val == undefined || products[val] == undefined) ){
+                    alert('Enter New Product Name');
+                }else if(val == -1 && (category.value == undefined || categories[category.value] == undefined)){
+                        alert('Enter category');
+                }else if((isNaN(val) || val == undefined || val != -1 && products[val] == undefined)){
                     
-                    alert('Enter correct and existing product name');
+                    alert('Select correct and existing product name');
                 }else{
                     document.forms[0].submit();
                 }

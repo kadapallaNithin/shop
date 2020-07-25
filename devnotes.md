@@ -1,0 +1,1 @@
+While importing be aware of signals. Eg: Import products with quantity=0 or whatever it is, according to the effects of creating an invoice. To import a product with quantity=20 which is actually due to an invoice of quantity 25 and a particular of quantity 5, turn off signals in config.py and import. If it is turned on, it ends up with quantity = 40 if imported with quantity=20.

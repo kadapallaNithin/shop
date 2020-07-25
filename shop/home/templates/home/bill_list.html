@@ -4,13 +4,15 @@
     <a href="{% url 'export' 'bills.xlsx'  %}" download=''  >Download</a>
     {% if bill %}
         <table>
+            <thead>
             <tr>
-                <td>No.</td>
-                <td>Customer</td>
-                <td>Total</td>
-                <td>Due</td>
-                <td>Date</td>
+                <th>No.</th>
+                <th>Customer</th>
+                <th>Total</th>
+                <th>Due</th>
+                <th>Date</th>
             </tr>
+            </thead>
             {% for b in bill %}
                 <tr>
                     <td>{{ b.id }}</td>

@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from .views import PaymentCreateView, ProductListView, BillListView, BillParticularsListView, CustomerBillsListView, CustomerListView, CustomerUpdateView, ParticularCreateView, InvoiceListView, PaymentsListView#, CustomerCreateView, VillageCreateView # BillCreateView,
+from .views import CategoryCreateView, PaymentCreateView, ProductListView, BillListView, BillParticularsListView, CustomerBillsListView, CustomerListView, CustomerUpdateView, ParticularCreateView, InvoiceListView, PaymentsListView#, CustomerCreateView, VillageCreateView # BillCreateView,
 from . import views
 urlpatterns = [
     path('payment/<int:bill_id>/',views.payment,name='payment'),
@@ -25,8 +25,10 @@ urlpatterns = [
 #    path('cart/',views.cart,name='cart'),#see bill_particular
     path('products/',ProductListView.as_view(),name='products'),
     path('bills/',BillListView.as_view(),name='bills'),
+    path('bill_date_update/<int:bill_id>/',views.bill_update_date,name='bill_date_update'),
 #    path('customer/add/',CustomerCreateView.as_view(),name='add_customer'),
     path('customer/<int:id>/bills/',CustomerBillsListView.as_view(),name='customer_bills'),
+    path('category/',CategoryCreateView.as_view(),name='new_category'),
     path('customers/',CustomerListView.as_view(),name='customers'),
     path('customer/<int:pk>/',CustomerUpdateView.as_view(),name='customer_update'),
     path('particular/',ParticularCreateView.as_view(),name='particular'),

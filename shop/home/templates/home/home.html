@@ -70,16 +70,18 @@
                 Intrest Rate :<input type="text" name="intrest_rate" onblur="set_amount();" value="0" required />
                 <span id='intrest_rate_message'></span>
                 <div>
-                    Principle Amount : <input id='principle' type='text' value="{{ bill.due }}" onblur="set_amount();" />
+                    Principle Amount : <input id='principle' name="amount" type='text' value="{{ bill.due }}" onblur="set_amount();" />
                 </div>
                 <div>
                     <span id='intrest_amount_calc'> </span><b id="intrest_amount"></b>
+                </div>
+                <div>
                     Payable : <span id='payable' style="color: green;"></span>
                 </div>
             </div>
         </div>
         <div>
-            Amount : <input type="text" name='amount' placeholder="Enter amount" />
+            Pay : <input type="text" id="pay" placeholder="Enter amount" value="{{ bill.due }}" onblur="set_principle();" />
         </div>
         <div>
             Remarks :<input type="text" name="remarks" placeholder="Optional" /> 
@@ -107,7 +109,9 @@
 //            console.log(x+' '+y);
             var amount = check_total('take','take_id') - check_total('return','return_id')
             document.getElementById('total').innerText =  amount;
-            document.getElementsByName('amount')[0].value = amount;
+            //document.getElementsByName('amount')[0].value = amount;
+            document.getElementById('pay').value = amount;
+            //set_principle();
         }
         function set_period(){
             document.getElementById('days').innerHTML = period_days;
@@ -116,7 +120,7 @@
                 document.getElementById('months').innerHTML = m.toString()+" Months ";
             }
         }
-        (function (){check_both();set_period();})();
+        (function (){set_period();set_amount();})();
         function set_amount(){
             check_both();
 //            var total = parseFloat(document.getElementById('total').innerText);
@@ -130,13 +134,20 @@
             var principle = parseFloat(document.getElementById('principle').value);
 //            if(intrest_rate > 0){
                 intrest_amount = principle*period_months*intrest_rate/100;
-                document.getElementById('intrest_amount_calc').innerText = '('+principle+' x '+intrest_rate+" x "+period_months+")/100 = ";
+                document.getElementById('intrest_amount_calc').innerText = 'Intrest : ('+principle+' x '+period_months+" x "+intrest_rate+")/100 = ";
                 document.getElementById('intrest_amount').innerText = intrest_amount;
                 document.getElementById('')
   //          }
             var payable = principle + intrest_amount;
             document.getElementById('payable').innerHTML = payable;
-            document.getElementsByName('amount')[0].value = payable;
+            //document.getElementsByName('amount')[0].value = payable;
+            document.getElementById('pay').value = payable;
+        }
+        function set_principle(){
+            var amount = document.getElementById('pay').value;
+            var r = parseFloat(document.getElementsByName('intrest_rate')[0].value);
+            document.getElementById('principle').value = amount/(1+period_months*r/100);
+            set_amount();
         }
     </script>
 {% endblock content %}
