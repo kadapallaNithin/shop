@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from .views import CategoryCreateView, PaymentCreateView, ProductListView, BillListView, BillParticularsListView, CustomerBillsListView, CustomerListView, CustomerUpdateView, ParticularCreateView, InvoiceListView, PaymentsListView#, CustomerCreateView, VillageCreateView # BillCreateView,
+from .views import CategoryCreateView, PaymentCreateView, ProductUpdateView, ProductListView, BillListView, BillParticularsListView, CustomerBillsListView, CustomerListView, CustomerUpdateView, ParticularCreateView, InvoiceListView, PaymentsListView#, CustomerCreateView, VillageCreateView # BillCreateView,
 from . import views
 urlpatterns = [
     path('payment/<int:bill_id>/',views.payment,name='payment'),
@@ -24,6 +24,7 @@ urlpatterns = [
     #path('payments/',views.payment_list,name='payments'),
 #    path('cart/',views.cart,name='cart'),#see bill_particular
     path('products/',ProductListView.as_view(),name='products'),
+    path('product_update/<int:pk>/',ProductUpdateView.as_view(template_name='home/product_update.html'),name='product_update'),
     path('bills/',BillListView.as_view(),name='bills'),
     path('bill_date_update/<int:bill_id>/',views.bill_update_date,name='bill_date_update'),
 #    path('customer/add/',CustomerCreateView.as_view(),name='add_customer'),

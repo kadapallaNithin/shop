@@ -72,6 +72,9 @@ trw:nth-child(1) {
 .date:hover .time{
     display: inline;
 }
+.date:active .time{
+    display: inline;
+}
 footer{
     padding: 50px;
     color : white;

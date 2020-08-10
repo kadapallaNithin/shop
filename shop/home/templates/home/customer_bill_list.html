@@ -19,7 +19,7 @@
                     <td><a href="#">{{b.customer}}</a></td>
                     <td><a href="{% url 'bill_particular' b.id %}">{{ b.total }}</a></td>
                     <td><a href="{% url 'payment' b.id %}">{{ b.due }}</a></td>
-                    <td><span class="date"><form method="POST" action="{% url 'bill_date_update' b.id %}"><input type="date" name="date" value="{{ b.date.date.isoformat }}" /> {% csrf_token %}<span class="time">,{{ b.date.time }}<input type="submit" value="Update"></span></form></span></td>
+                    <td><span class="date"><form method="POST" action="{% url 'bill_date_update' b.id %}"><input type="date" name="date" value="{{ b.date.date.isoformat }}" /> {% csrf_token %}<span class="time">,{{ b.date.time.isoformat }}<input type="submit" value="Update"></span></form></span></td>
                 </tr>
             {% endfor %}
             </tbody>

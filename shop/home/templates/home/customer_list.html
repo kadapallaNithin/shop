@@ -4,10 +4,22 @@
     {% if customers %}
         <datalist id="customers">
             {% for c in all_customers %}
-                <option value="{{ c.id }}">{{ c.name }}</option>
+                <option value="{{ c.id }}">{{ c.name }} {{ c.id_in_book }}</option>
             {% endfor %}
         </datalist>
-        Search Customer : <input list='customers' onblur="open_customer(this);" placeholder="eg. Kadapalla Nithin" />
+        Search Customer : 
+        <label>
+            <input type="radio" id='details' class="with-gap" name="link" checked=''>
+            <span>
+                Show Bills
+            </span>
+        </label>
+        <label>
+                <input type="radio" id='details' class="with-gap" name="link">
+                <span>Show Details</span>
+        </label>
+        <input list='customers' onblur="open_customer(this);" placeholder="eg. Kadapalla Nithin" />
+
         <div id='search_message'></div>
         <div id='sort_switch'></div>
         <table>
@@ -17,19 +29,21 @@
                 <th>Name</th>
                 <th>Address</th>
                 <th>Due</th>
-                <th>Phone</th>
-                <th>Email</th>
+                <th>Id in book</th>
+                <!-- <th>Phone</th>
+                <th>Email</th> -->
             </tr>
             </thead>
             <tbody>
             {% for c in customers %}
                 <tr>
-                    <td sortable-data='{{ c.id }}'><a href="{% url 'customer_update' c.id %}">{{ c.id }}</a></td>
+                    <td sortable-data='{{ c.id }}'><a href="{% url 'customer_update' c.id %}" target="blank" >{{ c.id }}</a></td>
                     <td sortable-data='{{ c.name }}'><a href="{% url 'customer_bills' c.id %}">{{ c.name }}</a></td>
-                    <td sortable-data='{{ c.address }}'>{{ c.address }}</td>
+                    <td sortable-data='{{ c.address }}'>{{ c.address.village }}</td>
                     <td sortable-data='{{ c.due }}'>{{ c.due }}</td>
-                    <td sortable-data='{{ c.phone }}'>{{ c.phone }}</td>
-                    <td sortable-data='{{ c.email }}'>{{ c.email }}</td>
+                    <td>{{ c.id_in_book }}</td>
+                    <!-- <td sortable-data='{{ c.phone }}'>{{ c.phone }}</td>
+                    <td sortable-data='{{ c.email }}'>{{ c.email }}</td> -->
                 </tr>
             {% endfor %}
             </tbody>
@@ -47,7 +61,11 @@
             if(id == undefined || isNaN(id)){
                 document.getElementById('search_message').innerHTML = "Select customer not just typing name";                
             }else{
-                window.location.assign("/customer/"+id+"/bills/");
+                var target = "";
+                if(document.getElementById('details').checked){
+                    target = "/bills/";
+                }
+                window.location.assign("/customer/"+id+target);
             }
 
         }

@@ -12,7 +12,7 @@ class Customer(models.Model):
     name = models.CharField(max_length=64)
     phone = models.IntegerField(null=True)
     email = models.EmailField(null=True)
-
+    id_in_book = models.IntegerField(default=0)
     address = models.ForeignKey(Village,models.CASCADE,related_name='user_address')#models.CharField(max_length=128)
     due = models.DecimalField(default=0,decimal_places=2,max_digits=10)
     
@@ -57,6 +57,11 @@ class Bill(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     total = models.DecimalField(max_digits=10,decimal_places=2,default=0)
     due = models.DecimalField(max_digits=10, decimal_places=2,default=0)
+    
+    @property
+    def time_isoformat(self):
+        return self.date.time().isoformat()[:8]
+
     def __str__(self):
         return str(self.customer)+' - '+str(self.total)#str(self.date)#
     def get_absolute_url(self):

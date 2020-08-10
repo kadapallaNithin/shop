@@ -19,10 +19,29 @@
                     <td><a href="{% url 'customer_bills' b.customer.id %}">{{b.customer}}</a></td>
                     <td><a href="{% url 'bill_particular' b.id %}">{{ b.total }}</a></td>
                     <td><a href="{% url 'payment' b.id %}">{{ b.due }}</a></td>
-                    <td><span class="date">{{ b.date.date }}<span class="time">,{{ b.date.time }}</span></span></td>
+                    <td>
+                        <form method="POST" action="{% url 'bill_date_update' b.id %}">
+                            {% csrf_token %}
+                            <span class="date" onclick="show_time(this);">
+                                <input type="date" name="date" value="{{ b.date.date.isoformat }}"/>
+                                <span class="time">,<input type="time" name="time" value="{{ b.time_isoformat }}" />
+                                {% if '.' in b.date.time.isoformat %}
+                                {{ b.date.time.isoformat }}
+                                {% endif %}
+                                <input type="submit" value="Update" /></span>
+                            </span>
+                        </form>
+                    </td>
                 </tr>
             {% endfor %}
         </table>
+        <script>
+//            document.getElementsByClassName('time')[0].style.visibility = "block";
+                function show_time(a){
+                    
+                    a.children[1].style.display = "inline";
+                }
+        </script>
     {% else %}
         No bills till now.
     {% endif %}

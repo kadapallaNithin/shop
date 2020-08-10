@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test, per
 from django.views.generic import ListView, CreateView, UpdateView
 from home.admin import BillResource,CustomerResource, InvoiceResource,ParticularResource, PaymentResource, ProductResource, RateResource, VillageResource
 from .models import Product, Bill, Particular, Rate, Category, Customer, Invoice, Village, Payment
-from .forms import VillageCreateForm
+from .forms import VillageCreateForm, ProductForm
 from decimal import Decimal
 import os
 import config
@@ -58,7 +58,7 @@ class MyListView(ListView):
 
 class CustomerUpdateView(PermissionRequiredMixin, UpdateView):
     model = Customer
-    fields = ['name','address','phone','email']
+    fields = ['name','address','phone','email','id_in_book']
     permission_required = ['change_customer']
 
     def get_form(self,form_class=None):
@@ -220,6 +220,10 @@ class PaymentsListView(PermissionRequiredMixin, MyListView):
     table = "home_payment AS p INNER JOIN home_bill as b ON p.bill_id = b.id INNER JOIN home_customer AS c ON b.customer_id = c.id "
     sort_links = ['id','c.name','b.due','amount','date','id']
 
+class ProductUpdateView(UpdateView):
+    form_class = ProductForm
+    model = Product
+
 class ProductListView(PermissionRequiredMixin, ListView):
     model = Product
     permission_required = ['view_product','view_rate']
@@ -285,23 +289,29 @@ def bill_update_date(request,bill_id):
         try:
             bill = get_object_or_404(Bill,id=bill_id)
             d = POST['date'].split('-')
-            bill.date = datetime.date(int(d[0]),int(d[1]),int(d[2]))
+            bill_time = bill.date.time()
+            new_time = bill_time
+            if 'time' in POST:
+                t = POST['time'].split(':')
+                new_time = datetime.time(int(t[0]),int(t[1]),int(t[2]))
+                #new_time = datetime.time.fromisoformat(POST['time'])
+            bill.date = datetime.datetime(int(d[0]),int(d[1]),int(d[2]),new_time.hour,new_time.minute,new_time.second)
             bill.save()
             messages.success(request,f"Bill { bill }'s date is updated to { bill.date }")
         except KeyError:
-            messages.warning(request,'Date is not posted!')
+            messages.warning(request,'Date or time is not posted!')
         except IndexError:
-            messages.warning(request,'Date is not appropriate')
+            messages.warning(request,'Date or time is not appropriate')
         except ValueError:
-            messages.warning(request,'Date is not well formed')
+            messages.warning(request,'Date or time is not well formed')
     #messages.warning(request,f'There was a mistake!')
-    return HttpResponseRedirect(reverse('customer_bills',args=(bill.customer.id,)))
+    return HttpResponseRedirect(reverse('bills'))#customer_,args=(bill.customer.id,)))
 
 # class BillCreateView(CreateView):
 #     model = Bill
 #     fields = ['customer','total','due']
 
-@permission_required('add_bill',raise_exception=True)
+@permission_required('add_bill')
 def bill_create(request):
     context = dict()
     if request.method == "POST":
@@ -426,7 +436,7 @@ class CustomerListView(PermissionRequiredMixin, MyListView):
     order = 'desc'
     paginate_by = 10
     table = "home_customer AS c INNER JOIN home_village AS v ON c.address_id = v.id "
-    sort_links = ["id","name","v.village","due","phone","email"]
+    sort_links = ["id","name","v.village","due","id_in_book","phone","email"]
     def get_context_data(self):
         context = super().get_context_data()
         context['all_customers'] = Customer.objects.all()
@@ -476,3 +486,4 @@ def invoice(request):
             "categories": Category.objects.all(),
         }
         return render(request,'home/invoice_form.html',context)
+
