@@ -2,7 +2,7 @@
 
 Bill tracker app for retail shop.
 
-Demo : https://nithinkadapalla.pythonanywhere.com/
+Demo : https://nithinshop.pythonanywhere.com/
 
 ### Installation Steps
 
